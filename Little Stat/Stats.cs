@@ -3,16 +3,9 @@
 // Holding all stats of an object
 public class Stats
 {
-    public string NAME = "-none-";
-    public float STRENGTH = 0;
-    public float VIGOUR = 0;
-    public float AGILITY = 0;
-    public float INTELLECT = 0;
-    public float PERCEPTION = 0;
-    public float TENACITY = 0;
-    public float CHARISMA = 0;
-    public float INSTINCT = 0;
-    public float COMMUNICATION = 0;
+    public string[] BaseStatNames = { "STRENGTH", "VIGOUR", "AGILITY", "INTELLECT", "PERCEPTION", "TENACITY", "CHARISMA", "INSTINCT", "COMMUNICATION" };
+    public int[] BaseStatValues = { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+
     public float MAXHP = 0; // Derrived only
     public float CURRENTHP = 0;
     public float ATTACK = 0; // Derrived only
@@ -28,51 +21,20 @@ public class Stats
     public float CURRENTFUROR = 0;
 
 
-    public int setName(string value)
-    {
-        NAME = value;
-        return 0;
-    }
-
-    // For setting major stats, minor ones are automatic
-    public int setStats(string statName, float value)
-    {
-        if (statName == "STRENGTH"){ STRENGTH = value; }
-        if (statName == "VIGOUR") { VIGOUR = value; }
-        if (statName == "AGILITY") { AGILITY = value; }
-        if (statName == "INTELLECT") { INTELLECT = value; }
-        if (statName == "PERCEPTION") { PERCEPTION = value; }
-        if (statName == "TENACITY") { TENACITY = value; }
-        if (statName == "INSTINCT") { INSTINCT = value; }
-        if (statName == "COMMUNICATION") { COMMUNICATION = value; }
-        if (statName == "CURRENTHP") { CURRENTHP = value; }
-        if (statName == "WEAPON") { WEAPON = value; }
-        if (statName == "WEAPONCHAR") { WEAPONCHAR = value; }
-        if (statName == "ARMOUR") { ARMOUR = value; }
-        if (statName == "CURRENTFUROR") { CURRENTFUROR = value; }
-
-        // Bad stat name, return error.
-        else{ return 1; }
-
-        derriveMinorStats();
-
-        return 0;
-    }
-
     // Setting the derrived minor stats from major ones
-    private void derriveMinorStats()
+    public void derriveMinorStats()
     {
-        float BODY = STRENGTH+VIGOUR+AGILITY;
-        float MIND = INTELLECT+PERCEPTION+TENACITY;
-        float SOUL = CHARISMA+INSTINCT+COMMUNICATION;
+        float BODY = BaseStatValues[1] + BaseStatValues[2] + BaseStatValues[3];
+        float MIND = BaseStatValues[3] + BaseStatValues[4] + BaseStatValues[5];
+        float SOUL = BaseStatValues[6] + BaseStatValues[7] + BaseStatValues[8];
 
         MAXHP = ((BODY * 3) + (MIND * 2) + SOUL) / 3;
         ATTACK = WEAPON + WEAPONCHAR;
-        PHYSICALDEFENCE = AGILITY + VIGOUR + INSTINCT + ARMOUR;
-        MENTALDEFENCE = TENACITY + INTELLECT + INSTINCT;
-        REACTION = INTELLECT + PERCEPTION + INSTINCT;
-        MOVEMENT = AGILITY + VIGOUR;
-        ENCUMBRANCE = STRENGTH + STRENGTH + VIGOUR;
-        FUROR = (VIGOUR + INSTINCT + TENACITY) / 2;
+        //PHYSICALDEFENCE = AGILITY + VIGOUR + INSTINCT + ARMOUR;
+        //MENTALDEFENCE = TENACITY + INTELLECT + INSTINCT;
+        //REACTION = INTELLECT + PERCEPTION + INSTINCT;
+        //MOVEMENT = AGILITY + VIGOUR;
+        //ENCUMBRANCE = STRENGTH + STRENGTH + VIGOUR;
+        //FUROR = (VIGOUR + INSTINCT + TENACITY) / 2;
     }
 }
