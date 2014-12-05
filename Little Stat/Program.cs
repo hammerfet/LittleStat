@@ -8,50 +8,16 @@ namespace Little_Stat
 {
     class Program
     {
-        static void newObject()
-        {
-            Stats stats = new Stats();
-
-            Console.Clear();
-            Console.Write("Enter NAME: ");
-            string name = Console.ReadLine();
-
-            for (int index = 0; index < stats.BaseStatNames.Length; index++ )
-            {
-                Console.Write("Enter ");
-                Console.Write(stats.BaseStatNames[index]);
-                Console.Write(" value: ");
-
-                int value;
-                string line = Console.ReadLine();
-
-                if (int.TryParse(line, out value))
-                {
-                    stats.BaseStatValues.SetValue(index, value);
-                }
-
-                else
-                {
-                    Console.WriteLine("This has to be a number");
-                    index--;
-                }
-            }
-
-            stats.derriveMinorStats();
-           
-            Console.WriteLine("Minor stats are...");
-            Console.Write("Max HP: ");
-            Console.WriteLine(stats.MAXHP);
-
-            Console.WriteLine("Press anykey to return...");
-            Console.ReadKey();
-        }
-
+        
         static void Main(string[] args)
         {
             Console.Clear();
             Console.WriteLine("Little Stat RPG stat Engine - Press any key to start");
             Console.ReadKey();
+
+            string name;
+
+            Dictionary<string, string> Character = new Dictionary<string, string>() { };
 
             while (true)
             {
@@ -69,11 +35,13 @@ namespace Little_Stat
                 switch (menu.Key)
                 {
                     case ConsoleKey.D1:
-                        newObject();
+                        name = Console.ReadLine();
+                        Character.Add(name, "PC");
                         break;
 
                     case ConsoleKey.D2:
-                        //
+                        name = Console.ReadLine();
+                        Character.Add(name, "NPC");
                         break;
 
                     case ConsoleKey.D3:
