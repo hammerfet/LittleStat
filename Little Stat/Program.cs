@@ -17,9 +17,7 @@ namespace Little_Stat
 
             string name;
 
-            Dictionary<string, string> Character = new Dictionary<string, string>() { };
-            Character charr = new Character();
-
+            Character character = new Character();
 
             while (true)
             {
@@ -40,17 +38,17 @@ namespace Little_Stat
                     case ConsoleKey.D1:
                         Console.Write("Enter PC name: ");
                         name = Console.ReadLine();
-                        Character.Add(name, "PC");
+                        character.CreatePC(name, "PC");
                         break;
 
                     case ConsoleKey.D2:
                         Console.Write("Enter NPC name: ");                        
                         name = Console.ReadLine();
-                        Character.Add(name, "NPC");
+                        character.CreatePC(name, "NPC");
                         break;
 
                     case ConsoleKey.D3:
-                        //
+                        character.PrintPC();
                         break;
 
                     case ConsoleKey.D4:

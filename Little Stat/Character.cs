@@ -11,13 +11,13 @@ namespace Little_Stat
         //Constructor Method
         public Character()
         {
-   
+            
         }
 
-        public void Create()
+        public void CreatePC(string name, string type)
         {
+            CharName.Add(name, type);
             //public string[] BaseStatNames = { "STRENGTH", "VIGOUR", "AGILITY", "INTELLECT", "PERCEPTION", "TENACITY", "CHARISMA", "INSTINCT", "COMMUNICATION" };
-            //public int[] BaseStatValues = { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
             //float BODY = BaseStatValues[1] + BaseStatValues[2] + BaseStatValues[3];
             //float MIND = BaseStatValues[3] + BaseStatValues[4] + BaseStatValues[5];
@@ -33,8 +33,21 @@ namespace Little_Stat
             //FUROR = (VIGOUR + INSTINCT + TENACITY) / 2;
         }
 
+        public void PrintPC(){
+
+            foreach(KeyValuePair<string, string> pair in CharName){
+                Console.WriteLine("{0}, {1}", pair.Key, pair.Value);
+            }
+            Console.ReadKey();
+                        
+        }
+
         // Variables
-        private Dictionary<string, string> chhar = new Dictionary<string, string>();
+        private Dictionary<string, string> CharName = new Dictionary<string, string>();
+        private Dictionary<string, string> CharStrength = new Dictionary<string, string>();
+        private Dictionary<string, string> CharVigour = new Dictionary<string, string>();
+        private Dictionary<string, string> CharAgility = new Dictionary<string, string>();
+        private Dictionary<string, string> CharIntellect = new Dictionary<string, string>();
 
         private float BODY;
         private float MIND;
