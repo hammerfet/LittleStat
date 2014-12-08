@@ -15,8 +15,22 @@ namespace Little_Stat
             name = Console.ReadLine();
             Console.Write("Enter STRENGTH value: ");
             STRENGTH = StringConv();
+            Console.Write("Enter VIGOUR value: ");
+            VIGOUR = StringConv();
             Console.Write("Enter AGILITY value: ");
             AGILITY = StringConv();
+            Console.Write("Enter INTELLECT value: ");
+            INTELLECT = StringConv();
+            Console.Write("Enter PERCEPTION value: ");
+            PERCEPTION = StringConv();
+            Console.Write("Enter TENACITY value: ");
+            TENACITY = StringConv();
+            Console.Write("Enter CHARISMA value: ");
+            CHARISMA = StringConv();
+            Console.Write("Enter INSTINCT value: ");
+            INSTINCT = StringConv();
+            Console.Write("Enter COMMUNICATION value: ");
+            COMMUNICATION = StringConv();
 
             character.CreateChar(name, type, STRENGTH, VIGOUR, AGILITY, INTELLECT, PERCEPTION, TENACITY, CHARISMA, INSTINCT, COMMUNICATION);
         }
@@ -24,7 +38,17 @@ namespace Little_Stat
         public void DisplayChar()
         {
             Console.WriteLine("Current list of characters are:..");
-            character.PrintChar();
+            
+            if (character.PrintChar())
+            {
+
+            }
+            
+            else
+            {
+                Console.WriteLine("That character does not exist..");
+            }
+
             Console.WriteLine("Press any key to return..");
             Console.ReadKey();
         }
