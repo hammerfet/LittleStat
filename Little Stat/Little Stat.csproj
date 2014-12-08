@@ -43,6 +43,7 @@
   <ItemGroup>
     <Compile Include="Character.cs" />
     <Compile Include="Program.cs" />
+    <Compile Include="ProgramHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

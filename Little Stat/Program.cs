@@ -8,16 +8,13 @@ namespace Little_Stat
 {
     class Program
     {
-        
         static void Main(string[] args)
         {
             Console.Clear();
             Console.WriteLine("Little Stat RPG stat Engine - Press any key to start");
             Console.ReadKey();
 
-            string name;
-
-            Character character = new Character();
+            ProgramHelper helper = new ProgramHelper();
 
             while (true)
             {
@@ -26,9 +23,12 @@ namespace Little_Stat
                 Console.WriteLine("  1 - Enter New Player");
                 Console.WriteLine("  2 - Enter New NPC");
                 Console.WriteLine("  3 - Enter New Hostile");
-                Console.WriteLine("  4 - Create battle instance");
-                Console.WriteLine("  5 - Show Inventory");
-                Console.WriteLine("  6 - Show Stats");
+                Console.WriteLine("  4 - Display Character info");
+                Console.WriteLine("  5 - Load Character from file");
+                Console.WriteLine("  6 - Save Character to file");
+                Console.WriteLine("  7 - Modify Character Stats");
+                Console.WriteLine("  8 - Check Character Inventory");
+                Console.WriteLine("  9 - Start Combat");
                 Console.WriteLine("  ESC - EXIT");
                 var menu = Console.ReadKey();
                 Console.Clear();
@@ -36,23 +36,19 @@ namespace Little_Stat
                 switch (menu.Key)
                 {
                     case ConsoleKey.D1:
-                        Console.Write("Enter PC name: ");
-                        name = Console.ReadLine();
-                        character.CreatePC(name, "PC");
+                        helper.CreateChar("PC");                         
                         break;
 
                     case ConsoleKey.D2:
-                        Console.Write("Enter NPC name: ");                        
-                        name = Console.ReadLine();
-                        character.CreatePC(name, "NPC");
+                        helper.CreateChar("NPC");
                         break;
 
                     case ConsoleKey.D3:
-                        character.PrintPC();
+                        helper.CreateChar("MOB");
                         break;
 
                     case ConsoleKey.D4:
-                        //
+                        helper.DisplayChar();
                         break;
 
                     case ConsoleKey.D5:
@@ -73,5 +69,7 @@ namespace Little_Stat
                 }
             }
         }
+
+        // Initialisers
     }
 }

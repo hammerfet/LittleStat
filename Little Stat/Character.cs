@@ -14,14 +14,13 @@ namespace Little_Stat
             
         }
 
-        public void CreatePC(string name, string type)
+        public void CreateChar(string name, string type, float STRENGTH, float VIGOUR, float AGILITY, float INTELLECT,
+            float PERCEPTION, float TENACITY, float CHARISMA, float INSTINCT, float COMMUNICATION)
         {
             CharName.Add(name, type);
-            //public string[] BaseStatNames = { "STRENGTH", "VIGOUR", "AGILITY", "INTELLECT", "PERCEPTION", "TENACITY", "CHARISMA", "INSTINCT", "COMMUNICATION" };
-
-            //float BODY = BaseStatValues[1] + BaseStatValues[2] + BaseStatValues[3];
-            //float MIND = BaseStatValues[3] + BaseStatValues[4] + BaseStatValues[5];
-            //float SOUL = BaseStatValues[6] + BaseStatValues[7] + BaseStatValues[8];
+            CharStrength.Add(name, STRENGTH);
+            CharAgility.Add(name, AGILITY);
+            CharVigour.Add(name, AGILITY);
 
             //MAXHP = ((BODY * 3) + (MIND * 2) + SOUL) / 3;
             //ATTACK = WEAPON + WEAPONCHAR;
@@ -31,23 +30,39 @@ namespace Little_Stat
             //MOVEMENT = AGILITY + VIGOUR;
             //ENCUMBRANCE = STRENGTH + STRENGTH + VIGOUR;
             //FUROR = (VIGOUR + INSTINCT + TENACITY) / 2;
+            // EXP = ?;
         }
 
-        public void PrintPC(){
-
+        public void PrintChar()
+        {
             foreach(KeyValuePair<string, string> pair in CharName){
                 Console.WriteLine("{0}, {1}", pair.Key, pair.Value);
             }
-            Console.ReadKey();
+
+            Console.WriteLine("Enter name to view more information..");
+
+            string name = Console.ReadLine();
+            
+            if(CharName.ContainsKey(name)){
+                float val;
+                CharStrength.TryGetValue(name, out val);
+                Console.WriteLine("STRENGTH is: {0}", val);
+            }
+         
+            else
+            {
+                Console.WriteLine("That character does not exist..");
+            }
+            
                         
         }
 
         // Variables
         private Dictionary<string, string> CharName = new Dictionary<string, string>();
-        private Dictionary<string, string> CharStrength = new Dictionary<string, string>();
-        private Dictionary<string, string> CharVigour = new Dictionary<string, string>();
-        private Dictionary<string, string> CharAgility = new Dictionary<string, string>();
-        private Dictionary<string, string> CharIntellect = new Dictionary<string, string>();
+        private Dictionary<string, float> CharStrength = new Dictionary<string, float>();
+        private Dictionary<string, float> CharVigour = new Dictionary<string, float>();
+        private Dictionary<string, float> CharAgility = new Dictionary<string, float>();
+        private Dictionary<string, float> CharIntellect = new Dictionary<string, float>();
 
         private float BODY;
         private float MIND;
@@ -60,5 +75,6 @@ namespace Little_Stat
         private float MOVEMENT;
         private float ENCUMBRANCE;
         private float FUROR;
+        private float EXP;
     }
 }
