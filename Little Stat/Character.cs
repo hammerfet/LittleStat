@@ -28,12 +28,16 @@ namespace Little_Stat
             CharInstinct.Add(name, INSTINCT);
             CharCommunication.Add(name, COMMUNICATION);
 
-            UpdateStats();
+            UpdateStats(name);
         }
 
-        private void UpdateStats()
+        private void UpdateStats(string name)
         {
             //MAXHP = ((BODY * 3) + (MIND * 2) + SOUL) / 3;
+            
+            //CharAttack(name, (WEAPON + WEAPONCHAR));
+            //CharPhysDefence(name, ())
+
             //ATTACK = WEAPON + WEAPONCHAR;
             //PHYSICALDEFENCE = AGILITY + VIGOUR + INSTINCT + ARMOUR;
             //MENTALDEFENCE = TENACITY + INTELLECT + INSTINCT;
@@ -44,29 +48,23 @@ namespace Little_Stat
             // EXP = ?;
         }
 
-        public bool PrintChar()
+        public bool GetCharStats(string name, out float STRENGTH, out float VIGOUR)
         {
-            foreach(KeyValuePair<string, string> pair in CharName){
-                Console.WriteLine("{0}, {1}", pair.Key, pair.Value);
-            }
-
-            Console.WriteLine("Enter name to view more information..");
-
-            string name = Console.ReadLine();
-
             if (CharName.ContainsKey(name))
             {
-                float val;
-                CharStrength.TryGetValue(name, out val);
-                Console.WriteLine("STRENGTH is: {0}", val);
+                CharStrength.TryGetValue(name, out STRENGTH);
+                CharVigour.TryGetValue(name, out VIGOUR);
                 return true;
             }
-            return false;
-                        
+            STRENGTH = 0;
+            VIGOUR = 0;
+            return false;   
         }
 
-        // Variables
-        private Dictionary<string, string> CharName = new Dictionary<string, string>();
+        // Public Variables
+        public Dictionary<string, string> CharName = new Dictionary<string, string>();
+        
+        // Private Variables
         private Dictionary<string, float> CharStrength = new Dictionary<string, float>();
         private Dictionary<string, float> CharVigour = new Dictionary<string, float>();
         private Dictionary<string, float> CharAgility = new Dictionary<string, float>();

@@ -38,10 +38,17 @@ namespace Little_Stat
         public void DisplayChar()
         {
             Console.WriteLine("Current list of characters are:..");
-            
-            if (character.PrintChar())
+            foreach (KeyValuePair<string, string> pair in character.CharName)
             {
+                Console.WriteLine("{0}, {1}", pair.Key, pair.Value);
+            }
 
+            Console.WriteLine("Enter name to view more information..");
+            
+            if (character.GetCharStats(Console.ReadLine(), out STRENGTH, out VIGOUR))
+            {
+                Console.WriteLine("STRENGTH is : {0}", STRENGTH);
+                Console.WriteLine("VIGOUR is: {0}", VIGOUR);
             }
             
             else
