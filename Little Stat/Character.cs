@@ -17,22 +17,49 @@ namespace Little_Stat
             
         }
 
+        public bool CheckForOrCreateChar(string NAME)
+        {    
+            using (SQLiteCommand cmd = new SQLiteCommand("SELECT count(*) FROM MajorStats WHERE name = @name", db))
+            {
+                cmd.Parameters.Add(new SQLiteParameter("@name", NAME));
+
+                db.Open();
+                int count = Convert.ToInt32(cmd.ExecuteScalar());
+                db.Close();
+
+                if (count == 0)
+                {
+                    cmd.CommandText = "INSERT INTO MajorStats (Name) VALUES (@name)";
+
+                    db.Open();
+                    cmd.ExecuteNonQuery();
+                    db.Close();
+                    
+                    return false;
+                }
+                return true;
+            }
+        }
+
         public void SetCharStats(string NAME, string STAT, float value)
         {
-   
-            using (SQLiteCommand cmd = new SQLiteCommand("INSERT INTO MajorStats (NameID, Strength) VALUES (@NameID, @Strength)", db))
+            string str = string.Format("UPDATE MajorStats SET {0} = @value WHERE Name = @name", STAT);
+            using (SQLiteCommand cmd = new SQLiteCommand(str, db))
             {
-                cmd.Parameters.Add(new SQLiteParameter("@Strength", value));
-                cmd.Parameters.Add(new SQLiteParameter("@NameID", NAME));
-            
+                cmd.Parameters.Add(new SQLiteParameter("@name", NAME));
+                cmd.Parameters.Add(new SQLiteParameter("@value", value));
+
                 db.Open();
                 cmd.ExecuteNonQuery();
                 db.Close();
             }
+        }
 
+        public void ReturnCharList()
+        {
             //SQLiteCommand cmd = new SQLiteCommand(db);
             //cmd.CommandText = "select * from MajorStats";
-        
+
             //SQLiteDataReader reader = cmd.ExecuteReader();
             //while (reader.Read())
             //{
@@ -42,12 +69,13 @@ namespace Little_Stat
             //reader.Close();
             //db.Close();
 
-            Console.ReadLine();
-
-
-            //UpdateStats(NAME);
         }
 
+        public void DisplayCharStats(string NAME)
+        {
+
+
+        }
         private void UpdateStats(string NAME)
         {
             //CharMaxHP = ((BODY * 3) + (MIND * 2) + SOUL) / 3;
@@ -65,32 +93,13 @@ namespace Little_Stat
             // EXP = ?;
         }
 
-        public bool GetCharStats(string name, out float STRENGTH, out float VIGOUR)
+        public void GetHP(string NAME, out float CurrentHP, out float MaxHP)
         {
-            if (CharType.ContainsKey(name))
-            {
-                CharStrength.TryGetValue(name, out STRENGTH);
-                CharVigour.TryGetValue(name, out VIGOUR);
-                return true;
-            }
-            STRENGTH = 0;
-            VIGOUR = 0;
-            return false;   
-        }
 
-        // Public Variables
-        public Dictionary<string, string> CharType = new Dictionary<string, string>();
-        
-        // Private Variables
-        private Dictionary<string, float> CharStrength = new Dictionary<string, float>();
-        private Dictionary<string, float> CharVigour = new Dictionary<string, float>();
-        private Dictionary<string, float> CharAgility = new Dictionary<string, float>();
-        private Dictionary<string, float> CharIntellect = new Dictionary<string, float>();
-        private Dictionary<string, float> CharPerception = new Dictionary<string, float>();
-        private Dictionary<string, float> CharTenacity = new Dictionary<string, float>();
-        private Dictionary<string, float> CharCharisma = new Dictionary<string, float>();
-        private Dictionary<string, float> CharInstinct = new Dictionary<string, float>();
-        private Dictionary<string, float> CharCommunication = new Dictionary<string, float>();
+        CurrentHP = 0;
+        MaxHP = 0;
+
+        }
 
         private Dictionary<string, float> CharMaxHP = new Dictionary<string, float>();
         private Dictionary<string, float> CharCurrentHP = new Dictionary<string, float>();

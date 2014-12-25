@@ -13,25 +13,28 @@ namespace Little_Stat
             Console.Write("Enter PC name: ");
             string name = Console.ReadLine();
 
-            character.SetCharStats(name, TYPE, 0);
+            if (character.CheckForOrCreateChar(name))
+            {
+                Console.WriteLine("Character exists so will be overwritten");
+            }
 
             Console.Write("Enter STRENGTH value: ");
-            character.SetCharStats(name, "STRENGTH", StringConv());
+            character.SetCharStats(name, "Strength", StringConv());
             
             Console.Write("Enter VIGOUR value: ");
-            character.SetCharStats(name, "VIGOUR", StringConv());
+            character.SetCharStats(name, "Vigour", StringConv());
             
             Console.Write("Enter AGILITY value: ");
-            character.SetCharStats(name, "AGILITY", StringConv());
+            character.SetCharStats(name, "Agility", StringConv());
             
             Console.Write("Enter INTELLECT value: ");
-            character.SetCharStats(name, "INTELLECT", StringConv());
+            character.SetCharStats(name, "Intellect", StringConv());
             
             Console.Write("Enter PERCEPTION value: ");
-            character.SetCharStats(name, "PERCEPTION", StringConv());
+            character.SetCharStats(name, "Perception", StringConv());
             
             Console.Write("Enter TENACITY value: ");
-            character.SetCharStats(name, "TENACITY", StringConv());
+            character.SetCharStats(name, "Tenacity", StringConv());
             
             Console.Write("Enter CHARISMA value: ");
             character.SetCharStats(name, "CHARISMA", StringConv());
