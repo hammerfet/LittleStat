@@ -3,37 +3,54 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Data.SQLite;
 
 namespace Little_Stat
 {
     class Character
     {
+        SQLiteConnection db = new SQLiteConnection(@"Data Source=..\..\LittleStat.s3db");
+
         //Constructor Method
         public Character()
         {
             
         }
 
-        public void CreateChar(string name, string type, float STRENGTH, float VIGOUR, float AGILITY, float INTELLECT,
-            float PERCEPTION, float TENACITY, float CHARISMA, float INSTINCT, float COMMUNICATION)
+        public void SetCharStats(string NAME, string STAT, float value)
         {
-            CharName.Add(name, type);
-            CharStrength.Add(name, STRENGTH);
-            CharAgility.Add(name, AGILITY);
-            CharVigour.Add(name, VIGOUR);
-            CharIntellect.Add(name, INTELLECT);
-            CharPerception.Add(name, PERCEPTION);
-            CharTenacity.Add(name, TENACITY);
-            CharCharisma.Add(name, CHARISMA);
-            CharInstinct.Add(name, INSTINCT);
-            CharCommunication.Add(name, COMMUNICATION);
+   
+            using (SQLiteCommand cmd = new SQLiteCommand("INSERT INTO MajorStats (NameID, Strength) VALUES (@NameID, @Strength)", db))
+            {
+                cmd.Parameters.Add(new SQLiteParameter("@Strength", value));
+                cmd.Parameters.Add(new SQLiteParameter("@NameID", NAME));
+            
+                db.Open();
+                cmd.ExecuteNonQuery();
+                db.Close();
+            }
 
-            UpdateStats(name);
+            //SQLiteCommand cmd = new SQLiteCommand(db);
+            //cmd.CommandText = "select * from MajorStats";
+        
+            //SQLiteDataReader reader = cmd.ExecuteReader();
+            //while (reader.Read())
+            //{
+            //    Console.WriteLine(reader["NameID"]);
+
+            //}
+            //reader.Close();
+            //db.Close();
+
+            Console.ReadLine();
+
+
+            //UpdateStats(NAME);
         }
 
-        private void UpdateStats(string name)
+        private void UpdateStats(string NAME)
         {
-            //MAXHP = ((BODY * 3) + (MIND * 2) + SOUL) / 3;
+            //CharMaxHP = ((BODY * 3) + (MIND * 2) + SOUL) / 3;
             
             //CharAttack(name, (WEAPON + WEAPONCHAR));
             //CharPhysDefence(name, ())
@@ -50,7 +67,7 @@ namespace Little_Stat
 
         public bool GetCharStats(string name, out float STRENGTH, out float VIGOUR)
         {
-            if (CharName.ContainsKey(name))
+            if (CharType.ContainsKey(name))
             {
                 CharStrength.TryGetValue(name, out STRENGTH);
                 CharVigour.TryGetValue(name, out VIGOUR);
@@ -62,7 +79,7 @@ namespace Little_Stat
         }
 
         // Public Variables
-        public Dictionary<string, string> CharName = new Dictionary<string, string>();
+        public Dictionary<string, string> CharType = new Dictionary<string, string>();
         
         // Private Variables
         private Dictionary<string, float> CharStrength = new Dictionary<string, float>();
