@@ -47,6 +47,31 @@ namespace Little_Stat
 
 
         /*
+         * Gets a list of characters in database
+         * 
+         * Returns: array of character names
+         */
+        public List<string> GetListOfChars()
+        {
+            List<String> namesList = new List<string>();
+           
+            using (SQLiteCommand cmd = new SQLiteCommand("SELECT Name FROM MajorStats", db))
+            {
+                db.Open();
+                SQLiteDataReader reader = cmd.ExecuteReader();
+                int i = 0;
+                while (reader.Read())
+                {
+                    namesList.Add(reader.GetString(i));
+                }
+                reader.Close();
+                db.Close();
+            }
+            return namesList;
+        }
+
+
+        /*
          * Sets a stat of the selected character
          * 
          * Args: NAME = character name to set stat of

@@ -49,12 +49,12 @@ namespace Little_Stat
                 {
                     case ConsoleKey.D1:
                     case ConsoleKey.NumPad1:
-                        CreateChar();                         
+                        DisplayChar();                     
                         break;
 
                     case ConsoleKey.D2:
                     case ConsoleKey.NumPad2:
-                        DisplayChar();
+                        CreateChar();  
                         break;
 
                     case ConsoleKey.D3:
@@ -149,8 +149,24 @@ namespace Little_Stat
          */
         static void DisplayChar()
         {
-            Console.WriteLine(character.ReturnStat("Bud", "Fortitude"));
-            Console.ReadKey();
+            Console.WriteLine("");
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("  The following characters exist");
+            Console.WriteLine("  ------------------------------");
+            Console.ResetColor();
+            Console.WriteLine("");
+            var NamesList = character.GetListOfChars();
+
+            NamesList.ForEach(delegate(String name)
+                {   Console.WriteLine("    {0}", name);   }
+            );
+
+            Console.WriteLine("");
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.Write("  Select Character to get info: ");
+            //Console.WriteLine(character.ReturnStat("Bud", "Fortitude"));
+            Console.ReadLine();
+            Console.ResetColor();
         }
 
 
