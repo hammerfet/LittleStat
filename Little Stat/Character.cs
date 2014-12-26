@@ -9,14 +9,18 @@ namespace Little_Stat
 {
     class Character
     {
+        /* Create database object */
         SQLiteConnection db = new SQLiteConnection(@"Data Source=..\..\LittleStat.s3db");
 
-        //Constructor Method
-        public Character()
-        {
-            
-        }
 
+        /* 
+         * Checks if the character exists in database.
+         * If not, it will create one. 
+         * 
+         * Args: NAME = name of character to create
+         * 
+         * Returns: True or False of character existing
+         */ 
         public bool CheckForOrCreateChar(string NAME)
         {    
             using (SQLiteCommand cmd = new SQLiteCommand("SELECT count(*) FROM MajorStats WHERE name = @name", db))
@@ -41,6 +45,16 @@ namespace Little_Stat
             }
         }
 
+
+        /*
+         * Sets a stat of the selected character
+         * 
+         * Args: NAME = character name to set stat of
+         *       STAT = the stat to set
+         *       value = the value to set the stat to
+         *       
+         * Returns: Nothing..
+         */
         public void SetCharStats(string NAME, string STAT, float value)
         {
             string str = string.Format("UPDATE MajorStats SET {0} = @value WHERE Name = @name", STAT);
@@ -55,61 +69,98 @@ namespace Little_Stat
             }
         }
 
-        public void ReturnCharList()
+
+        /*
+         * Returns the stat of a character, if it's
+         * not a base stat, then it's caluculated before
+         * being returned.
+         * 
+         * Args: NAME = the name of the character
+         *       STAT = the stat to return
+         *       
+         * Returns: number of requested stat
+         */
+        public float ReturnStat(string NAME, string STAT)
         {
-            //SQLiteCommand cmd = new SQLiteCommand(db);
-            //cmd.CommandText = "select * from MajorStats";
+            float result = 0;
+            string str = "";
 
-            //SQLiteDataReader reader = cmd.ExecuteReader();
-            //while (reader.Read())
-            //{
-            //    Console.WriteLine(reader["NameID"]);
+            switch (STAT)
+            {
+                case "Strength": // All these stats are base stats, the can be called directly from the db
+                case "Vigour":
+                case "Agility":
+                case "Intellect":
+                case "Perception":
+                case "Tenacity":
+                case "Charisma":
+                case "Instinct":
+                case "Communication":
+                case "CurrentHP":
+                case "CurrentMana":
+                case "CurrentStamina":
+                case "EXP":
+                    
+                    str = string.Format("SELECT {0} FROM MajorStats WHERE Name = '{1}'", STAT, NAME);
 
-            //}
-            //reader.Close();
-            //db.Close();
+                    using (SQLiteCommand cmd = new SQLiteCommand(str, db))
+                    {
+                        db.Open();
+                        result = Convert.ToInt32(cmd.ExecuteScalar());
+                        db.Close();
+                    }
+                    break;
 
+                case "MaxHP": // Requires long calculation
+
+                    break;
+
+                case "MaxMana":
+                    break;
+
+                case "MaxStamina":
+                    break;
+
+                case "Movement":
+                    str = string.Format("SELECT Agility, Vigour FROM MajorStats WHERE Name = '{0}'", NAME);
+                    using (SQLiteCommand cmd = new SQLiteCommand(str, db))
+                    {
+                        db.Open();
+
+                        SQLiteDataReader reader = cmd.ExecuteReader();
+
+                        while (reader.Read())
+                        {
+                            result = Convert.ToInt32(reader["Agility"]) + Convert.ToInt32(reader["Vigour"]);
+                        }
+
+                        reader.Close();
+                        db.Close();
+                    }
+                    break;
+
+                case "PhysicalDefence":
+                case "Fortitude":
+                    break;
+
+                case "MentalDefence":
+                case "Will":
+                    break;
+
+                case "Reaction":
+                    break;
+
+                case "MaxEncumberance":
+                    break;
+
+
+            }
+            return result;
         }
 
-        public void DisplayCharStats(string NAME)
-        {
 
-
-        }
-        private void UpdateStats(string NAME)
-        {
-            //CharMaxHP = ((BODY * 3) + (MIND * 2) + SOUL) / 3;
-            
-            //CharAttack(name, (WEAPON + WEAPONCHAR));
-            //CharPhysDefence(name, ())
-
-            //ATTACK = WEAPON + WEAPONCHAR;
-            //PHYSICALDEFENCE = AGILITY + VIGOUR + INSTINCT + ARMOUR;
-            //MENTALDEFENCE = TENACITY + INTELLECT + INSTINCT;
-            //REACTION = INTELLECT + PERCEPTION + INSTINCT;
-            //MOVEMENT = AGILITY + VIGOUR;
-            //ENCUMBRANCE = STRENGTH + STRENGTH + VIGOUR;
-            //FUROR = (VIGOUR + INSTINCT + TENACITY) / 2;
-            // EXP = ?;
-        }
-
-        public void GetHP(string NAME, out float CurrentHP, out float MaxHP)
-        {
-
-        CurrentHP = 0;
-        MaxHP = 0;
-
-        }
-
-        private Dictionary<string, float> CharMaxHP = new Dictionary<string, float>();
-        private Dictionary<string, float> CharCurrentHP = new Dictionary<string, float>();
-        private Dictionary<string, float> CharAttack = new Dictionary<string, float>();
-        private Dictionary<string, float> CharPhysDefence = new Dictionary<string, float>();
-        private Dictionary<string, float> CharMenDefence = new Dictionary<string, float>();
-        private Dictionary<string, float> CharReaction = new Dictionary<string, float>();
-        private Dictionary<string, float> CharMovement = new Dictionary<string, float>();
-        private Dictionary<string, float> CharEncumbrance = new Dictionary<string, float>();
-        private Dictionary<string, float> CharFuror = new Dictionary<string, float>();
-        private Dictionary<string, float> CharEXP = new Dictionary<string, float>();
+        /*
+         * No more methods here
+         */
     }
 }

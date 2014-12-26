@@ -10,19 +10,17 @@ namespace Little_Stat
     {
         static void Main(string[] args)
         {
-            Console.Clear();
-            Console.WriteLine("Little Stat RPG stat Engine - Press any key to start");
-            Console.ReadKey();
-
+            // Start the helper object
             ProgramHelper helper = new ProgramHelper();
 
+            // Simple GUI interface
             while (true)
             {
                 Console.Clear();
                 Console.WriteLine("Menu..");
-                Console.WriteLine("  1 - Enter New Player");
-                Console.WriteLine("  2 - Enter New NPC");
-                Console.WriteLine("  3 - Enter New Hostile");
+                Console.WriteLine("  1 - Create New Character");
+                Console.WriteLine("  2 - ..");
+                Console.WriteLine("  3 - ..");
                 Console.WriteLine("  4 - Display Character info");
                 Console.WriteLine("  5 - Load Character from file");
                 Console.WriteLine("  6 - Save Character to file");
@@ -36,15 +34,13 @@ namespace Little_Stat
                 switch (menu.Key)
                 {
                     case ConsoleKey.D1:
-                        helper.CreateChar("PC");                         
+                        helper.CreateChar();                         
                         break;
 
                     case ConsoleKey.D2:
-                        helper.CreateChar("NPC");
                         break;
 
                     case ConsoleKey.D3:
-                        helper.CreateChar("MOB");
                         break;
 
                     case ConsoleKey.D4:
@@ -69,7 +65,10 @@ namespace Little_Stat
                 }
             }
         }
-
-        // Initialisers
+        
+        
+        /*
+         * No more methods here
+         */
     }
 }

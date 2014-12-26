@@ -8,7 +8,10 @@ namespace Little_Stat
 {
     class ProgramHelper
     {
-        public void CreateChar(string TYPE)
+        /*
+         * Creates a character, with all base stats
+         */
+        public void CreateChar()
         {
             Console.Write("Enter PC name: ");
             string name = Console.ReadLine();
@@ -46,31 +49,22 @@ namespace Little_Stat
             character.SetCharStats(name, "COMMUNICATION", StringConv());
         }
 
+
+        /*
+         * Displays characters stats.
+         * Currently a placeholder
+         */
         public void DisplayChar()
         {
-            Console.WriteLine("Current list of characters are:..");
-            foreach (KeyValuePair<string, string> pair in character.CharType)
-            {
-                Console.WriteLine("{0}, {1}", pair.Key, pair.Value);
-            }
-
-            Console.WriteLine("Enter name to view more information..");
-            
-            if (character.GetCharStats(Console.ReadLine(), out STRENGTH, out VIGOUR))
-            {
-                Console.WriteLine("STRENGTH is : {0}", STRENGTH);
-                Console.WriteLine("VIGOUR is: {0}", VIGOUR);
-            }
-            
-            else
-            {
-                Console.WriteLine("That character does not exist..");
-            }
-
-            Console.WriteLine("Press any key to return..");
+            Console.WriteLine(character.ReturnStat("raj","Movement"));
             Console.ReadKey();
         }
 
+
+        /*
+         * Converts the text input into a float
+         * shows an error message if not suceeded
+         */
         private float StringConv()
         {
             while (true)
@@ -87,6 +81,10 @@ namespace Little_Stat
 
         }
 
+
+        /*
+         * Local variables
+         */
         Character character = new Character();
         float STRENGTH;
         float VIGOUR;
