@@ -121,36 +121,110 @@ namespace Little_Stat
                 case "MaxStamina":
                     break;
 
+                /*
+                 * Movement calculation
+                 * 
+                 * Movement = AGI + VIG
+                 */
                 case "Movement":
                     str = string.Format("SELECT Agility, Vigour FROM MajorStats WHERE Name = '{0}'", NAME);
                     using (SQLiteCommand cmd = new SQLiteCommand(str, db))
                     {
                         db.Open();
-
                         SQLiteDataReader reader = cmd.ExecuteReader();
-
                         while (reader.Read())
                         {
                             result = Convert.ToInt32(reader["Agility"]) + Convert.ToInt32(reader["Vigour"]);
                         }
-
                         reader.Close();
                         db.Close();
                     }
                     break;
 
+                /*
+                 * Phys defence or Fortitude calculation
+                 * 
+                 * Fortitude = AGI + VIG + INS
+                 */
                 case "PhysicalDefence":
                 case "Fortitude":
+                    str = string.Format("SELECT Agility, Vigour, Instinct FROM MajorStats WHERE Name = '{0}'", NAME);
+                    using (SQLiteCommand cmd = new SQLiteCommand(str, db))
+                    {
+                        db.Open();
+                        SQLiteDataReader reader = cmd.ExecuteReader();
+                        while (reader.Read())
+                        {
+                            result = Convert.ToInt32(reader["Agility"]) + Convert.ToInt32(reader["Vigour"])
+                                + Convert.ToInt32(reader["Instinct"]);
+                        }
+                        reader.Close();
+                        db.Close();
+                    }
                     break;
 
+                /*
+                 * Men defence or Will calculation
+                 * 
+                 * Will = TEN + INT + INS
+                 */
                 case "MentalDefence":
                 case "Will":
+                    str = string.Format("SELECT Tenacity, Intellect, Instinct FROM MajorStats WHERE Name = '{0}'", NAME);
+                    using (SQLiteCommand cmd = new SQLiteCommand(str, db))
+                    {
+                        db.Open();
+                        SQLiteDataReader reader = cmd.ExecuteReader();
+                        while (reader.Read())
+                        {
+                            result = Convert.ToInt32(reader["Tenacity"]) + Convert.ToInt32(reader["Intellect"])
+                                + Convert.ToInt32(reader["Instinct"]);
+                        }
+                        reader.Close();
+                        db.Close();
+                    }
                     break;
 
+                /*
+                 * Reaction calculation
+                 * 
+                 * Reaction = INT + PER + INS
+                 */
                 case "Reaction":
+                    str = string.Format("SELECT Intellect, Perception, Instinct FROM MajorStats WHERE Name = '{0}'", NAME);
+                    using (SQLiteCommand cmd = new SQLiteCommand(str, db))
+                    {
+                        db.Open();
+                        SQLiteDataReader reader = cmd.ExecuteReader();
+                        while (reader.Read())
+                        {
+                            result = Convert.ToInt32(reader["Intellect"]) + Convert.ToInt32(reader["Perception"])
+                                + Convert.ToInt32(reader["Instinct"]);
+                        }
+                        reader.Close();
+                        db.Close();
+                    }
                     break;
 
+                /*
+                 * Encumbrance calculation
+                 * 
+                 * Encumbrance = STR + STR + VIG
+                 */
                 case "MaxEncumberance":
+                    str = string.Format("SELECT Strength, Vigour FROM MajorStats WHERE Name = '{0}'", NAME);
+                    using (SQLiteCommand cmd = new SQLiteCommand(str, db))
+                    {
+                        db.Open();
+                        SQLiteDataReader reader = cmd.ExecuteReader();
+                        while (reader.Read())
+                        {
+                            result = Convert.ToInt32(reader["Strength"]) + Convert.ToInt32(reader["Strength"])
+                                + Convert.ToInt32(reader["Vigour"]);
+                        }
+                        reader.Close();
+                        db.Close();
+                    }
                     break;
 
 
