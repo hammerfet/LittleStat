@@ -56,6 +56,17 @@ namespace Little_Stat
             }
         }
 
+        public void Delete(string NAME)
+        {
+            using (SQLiteCommand cmd = new SQLiteCommand("DELETE FROM MajorStats WHERE Name = @Name", db))
+            {
+                cmd.Parameters.Add(new SQLiteParameter("@name", NAME));
+                db.Open();
+                cmd.ExecuteNonQuery();
+                db.Close();
+            }
+        }
+        
 
         /*
          * Gets a list of characters in database
@@ -139,14 +150,31 @@ namespace Little_Stat
                     str = string.Format("SELECT {0} FROM MajorStats WHERE Name = '{1}'", STAT, NAME);
                     break;
 
-                case "MaxHP": // Requires long calculation
-
+                /*
+                 * Max hit points calculation
+                 * 
+                 * Mased mainly on phisical stats
+                 */
+                case "MaxHP":
+                    str = string.Format("SELECT ((Strength + Vigour + Agility) * 3) + ((Intellect + Perception + Tenacity) * 2) + (Charisma + Instinct + Communication) FROM MajorStats WHERE Name = '{0}'", NAME);
                     break;
 
+                /*
+                 * Max mana calculation
+                 * 
+                 * Base mainly on Mental stats
+                 */ 
                 case "MaxMana":
+                    str = string.Format("SELECT Vigour + Intellect + Tenacity FROM MajorStats WHERE Name = '{0}'", NAME);
                     break;
 
+                /*
+                 * Max stamina calculation
+                 * 
+                 * Base on phisical stats
+                 */ 
                 case "MaxStamina":
+                    str = string.Format("SELECT Strength + Agility + Vigour FROM MajorStats WHERE Name = '{0}'", NAME);
                     break;
 
                 /*
@@ -155,7 +183,7 @@ namespace Little_Stat
                  * Movement = AGI + VIG
                  */
                 case "Movement":
-                    str = string.Format("SELECT Agility + Vigour FROM MajorStats WHERE Name = '{0}'", NAME);
+                    str = string.Format("SELECT Agility + Vigour + Instinct FROM MajorStats WHERE Name = '{0}'", NAME);
                     break;
 
                 /*

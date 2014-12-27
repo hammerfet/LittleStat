@@ -162,6 +162,11 @@ namespace Little_Stat
 
             Console.Write("    Enter COMMUNICATION value: ");
             character.SetCharStats(name, "COMMUNICATION", GetFloatFromConsole());
+
+            // Set Max HP, Mana and Stamina
+            character.SetCharStats(name, "CurrentHP", character.ReturnStat(name, "MaxHP"));
+            character.SetCharStats(name, "CurrentMana", character.ReturnStat(name, "MaxMana"));
+            character.SetCharStats(name, "CurrentStamina", character.ReturnStat(name, "MaxStamina"));
         }
 
 
@@ -199,10 +204,31 @@ namespace Little_Stat
             if (character.Exists(characterName))
             {
                 Console.WriteLine("");
-                Console.WriteLine("  Strength: {0}", character.ReturnStat(characterName, "Strength"));
-                Console.WriteLine("  Agility: {0}", character.ReturnStat(characterName, "Agility"));
+                Console.Write("    HP = {0} / {1}", character.ReturnStat(characterName, "CurrentHP"), character.ReturnStat(characterName, "MaxHP"));
+                Console.Write("    Mana = {0} / {1}", character.ReturnStat(characterName, "CurrentMana"), character.ReturnStat(characterName, "MaxMana"));
+                Console.Write("    Stamina = {0} / {1}", character.ReturnStat(characterName, "CurrentStamina"), character.ReturnStat(characterName, "MaxStamina"));
+                Console.WriteLine("\n");
+                Console.Write("    Strength: {0}", character.ReturnStat(characterName, "Strength"));
+                Console.Write("    Vigour: {0}", character.ReturnStat(characterName, "Vigour"));
+                Console.Write("        Agility: {0}", character.ReturnStat(characterName, "Agility"));
+                Console.WriteLine("");
+                Console.Write("    Intellect: {0}", character.ReturnStat(characterName, "Intellect"));
+                Console.Write("   Perception: {0}", character.ReturnStat(characterName, "Perception"));
+                Console.Write("    Tenacity: {0}", character.ReturnStat(characterName, "Tenacity"));
+                Console.WriteLine("");
+                Console.Write("    Charisma: {0}", character.ReturnStat(characterName, "Charisma"));
+                Console.Write("    Instinct: {0}", character.ReturnStat(characterName, "Instinct"));
+                Console.Write("      Communication: {0}", character.ReturnStat(characterName, "Communication"));
+                Console.WriteLine("\n");
+                Console.Write("    Movement: {0}", character.ReturnStat(characterName, "Movement"));
+                Console.Write("   Reaction: {0}", character.ReturnStat(characterName, "Reaction"));
+                Console.WriteLine("");
+                Console.Write("    Fortitude: {0}", character.ReturnStat(characterName, "Fortitude"));
+                Console.Write("  Will: {0}", character.ReturnStat(characterName, "Will"));
+                Console.WriteLine("\n");
+                Console.Write("    Experience: {0}", character.ReturnStat(characterName, "EXP"));
+                Console.WriteLine("\n");
 
-                Console.WriteLine("  Movement: {0}", character.ReturnStat(characterName, "Movement"));
             }
             
             // Notify user if character doesnt exist
@@ -210,12 +236,19 @@ namespace Little_Stat
             {
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("");
-                Console.WriteLine("  No such character, press any key to return");
+                Console.WriteLine("  No such character. ");
+                Console.WriteLine("");
                 Console.ResetColor();
             }
 
             // Press any key to return
-            Console.ReadKey();
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.WriteLine("  Press any key to return or 'Del' to remove character");
+            Console.ResetColor();
+            var menu = Console.ReadKey();
+            if (menu.Key == ConsoleKey.Delete) character.Delete(characterName);
+
+            return;
         }
 
 
