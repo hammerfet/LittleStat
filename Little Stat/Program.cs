@@ -8,12 +8,12 @@ namespace Little_Stat
 {
     class Program
     {
+        /*
+         * Main application is simply
+         * a console based user interface
+         */
         static void Main(string[] args)
         {
-            // Start the helper object
-            ProgramHelper helper = new ProgramHelper();
-
-            // Simple GUI interface
             while (true)
             {
                 Console.Clear();
@@ -92,9 +92,17 @@ namespace Little_Stat
 
         /*
          * Creates a character, with all base stats
+         * Checks if the character name is a good length
+         * and if it already exists. It will give an option
+         * to overwrite.
+         * 
+         * Args: none
+         * 
+         * Returns: only if bad parameter or user cancels
          */
         static void CreateChar()
         {
+            // Header
             Console.WriteLine("");
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine("  Create new Character");
@@ -103,9 +111,19 @@ namespace Little_Stat
             Console.WriteLine("");
             Console.Write("    Enter PC name: ");
 
+            // Get name and check string length
             string name = Console.ReadLine();
+            if (name.Length > 30 || name.Length < 1)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("\n    Character name length has to be between than 0 and 30, \n    Press any key to return..");
+                Console.ResetColor();
+                var menu = Console.ReadKey();
+                return;
+            }
 
-            if (character.CheckForOrCreateChar(name))
+            // Check if character exists
+            if (character.Exists(name))
             {
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("\n    Character already exists, \n    Press Enter to overwrite or any key to return..\n");
@@ -114,6 +132,10 @@ namespace Little_Stat
                 if (menu.Key != ConsoleKey.Enter) return;
             }
 
+            // Create character if doesn't exist
+            else character.Create(name);
+
+            // Finally write or overwite character stats
             Console.Write("    Enter STRENGTH value: ");
             character.SetCharStats(name, "Strength", GetFloatFromConsole());
 
@@ -144,29 +166,56 @@ namespace Little_Stat
 
 
         /*
-         * Displays characters stats.
-         * Currently a placeholder
+         * Displays all characters in database.
+         * User can then select a character to
+         * see details of.
+         * 
+         * Returns: only if user types invalid character
          */
         static void DisplayChar()
         {
+            // Header
             Console.WriteLine("");
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine("  The following characters exist");
             Console.WriteLine("  ------------------------------");
             Console.ResetColor();
             Console.WriteLine("");
+            
+            // Get list of characters
             var NamesList = character.GetListOfChars();
-
             NamesList.ForEach(delegate(String name)
                 {   Console.WriteLine("    {0}", name);   }
             );
 
+            // Let the user type in the character name to get info for
             Console.WriteLine("");
             Console.ForegroundColor = ConsoleColor.Blue;
             Console.Write("  Select Character to get info: ");
-            //Console.WriteLine(character.ReturnStat("Bud", "Fortitude"));
-            Console.ReadLine();
+            string characterName = Console.ReadLine();
             Console.ResetColor();
+
+            // Print out info is character exists
+            if (character.Exists(characterName))
+            {
+                Console.WriteLine("");
+                Console.WriteLine("  Strength: {0}", character.ReturnStat(characterName, "Strength"));
+                Console.WriteLine("  Agility: {0}", character.ReturnStat(characterName, "Agility"));
+
+                Console.WriteLine("  Movement: {0}", character.ReturnStat(characterName, "Movement"));
+            }
+            
+            // Notify user if character doesnt exist
+            else
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("");
+                Console.WriteLine("  No such character, press any key to return");
+                Console.ResetColor();
+            }
+
+            // Press any key to return
+            Console.ReadKey();
         }
 
 
@@ -188,6 +237,12 @@ namespace Little_Stat
                 }
             }
         }
+
+        
+        /*
+         * No more methods here
+         */
+
 
         /*
          * Local variable declarations

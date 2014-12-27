@@ -9,20 +9,19 @@ namespace Little_Stat
 {
     class Character
     {
-        /* Create database object */
+        /* Create database connection object */
         SQLiteConnection db = new SQLiteConnection(@"Data Source=..\..\LittleStat.s3db");
 
 
-        /* 
-         * Checks if the character exists in database.
-         * If not, it will create one. 
+        /*
+         * Checks if character exists in database
          * 
-         * Args: NAME = name of character to create
+         * Args: Name of character to check
          * 
-         * Returns: True or False of character existing
-         */ 
-        public bool CheckForOrCreateChar(string NAME)
-        {    
+         * Returns: true or false
+         */
+        public bool Exists(string NAME)
+        {
             using (SQLiteCommand cmd = new SQLiteCommand("SELECT count(*) FROM MajorStats WHERE name = @name", db))
             {
                 cmd.Parameters.Add(new SQLiteParameter("@name", NAME));
@@ -31,17 +30,29 @@ namespace Little_Stat
                 int count = Convert.ToInt32(cmd.ExecuteScalar());
                 db.Close();
 
-                if (count == 0)
-                {
-                    cmd.CommandText = "INSERT INTO MajorStats (Name) VALUES (@name)";
+                if (count == 0) return false;
+                else return true;
+            }
+        }
 
-                    db.Open();
-                    cmd.ExecuteNonQuery();
-                    db.Close();
-                    
-                    return false;
-                }
-                return true;
+
+        /* 
+         * Creates character in database. Should
+         * only be called after checking if character
+         * already exists.
+         * 
+         * Args: NAME = name of character to create
+         * 
+         * Returns: Nothing
+         */
+        public void Create(string NAME)
+        {
+            using (SQLiteCommand cmd = new SQLiteCommand("INSERT INTO MajorStats (Name) VALUES (@name)", db))
+            {
+                cmd.Parameters.Add(new SQLiteParameter("@name", NAME));
+                db.Open();
+                cmd.ExecuteNonQuery();
+                db.Close();
             }
         }
 
@@ -125,15 +136,7 @@ namespace Little_Stat
                 case "CurrentMana":
                 case "CurrentStamina":
                 case "EXP":
-                    
                     str = string.Format("SELECT {0} FROM MajorStats WHERE Name = '{1}'", STAT, NAME);
-
-                    using (SQLiteCommand cmd = new SQLiteCommand(str, db))
-                    {
-                        db.Open();
-                        result = Convert.ToInt32(cmd.ExecuteScalar());
-                        db.Close();
-                    }
                     break;
 
                 case "MaxHP": // Requires long calculation
@@ -152,18 +155,7 @@ namespace Little_Stat
                  * Movement = AGI + VIG
                  */
                 case "Movement":
-                    str = string.Format("SELECT Agility, Vigour FROM MajorStats WHERE Name = '{0}'", NAME);
-                    using (SQLiteCommand cmd = new SQLiteCommand(str, db))
-                    {
-                        db.Open();
-                        SQLiteDataReader reader = cmd.ExecuteReader();
-                        while (reader.Read())
-                        {
-                            result = Convert.ToInt32(reader["Agility"]) + Convert.ToInt32(reader["Vigour"]);
-                        }
-                        reader.Close();
-                        db.Close();
-                    }
+                    str = string.Format("SELECT Agility + Vigour FROM MajorStats WHERE Name = '{0}'", NAME);
                     break;
 
                 /*
@@ -173,19 +165,7 @@ namespace Little_Stat
                  */
                 case "PhysicalDefence":
                 case "Fortitude":
-                    str = string.Format("SELECT Agility, Vigour, Instinct FROM MajorStats WHERE Name = '{0}'", NAME);
-                    using (SQLiteCommand cmd = new SQLiteCommand(str, db))
-                    {
-                        db.Open();
-                        SQLiteDataReader reader = cmd.ExecuteReader();
-                        while (reader.Read())
-                        {
-                            result = Convert.ToInt32(reader["Agility"]) + Convert.ToInt32(reader["Vigour"])
-                                + Convert.ToInt32(reader["Instinct"]);
-                        }
-                        reader.Close();
-                        db.Close();
-                    }
+                    str = string.Format("SELECT Agility + Vigour + Instinct FROM MajorStats WHERE Name = '{0}'", NAME);
                     break;
 
                 /*
@@ -195,19 +175,7 @@ namespace Little_Stat
                  */
                 case "MentalDefence":
                 case "Will":
-                    str = string.Format("SELECT Tenacity, Intellect, Instinct FROM MajorStats WHERE Name = '{0}'", NAME);
-                    using (SQLiteCommand cmd = new SQLiteCommand(str, db))
-                    {
-                        db.Open();
-                        SQLiteDataReader reader = cmd.ExecuteReader();
-                        while (reader.Read())
-                        {
-                            result = Convert.ToInt32(reader["Tenacity"]) + Convert.ToInt32(reader["Intellect"])
-                                + Convert.ToInt32(reader["Instinct"]);
-                        }
-                        reader.Close();
-                        db.Close();
-                    }
+                    str = string.Format("SELECT Tenacity + Intellect + Instinct FROM MajorStats WHERE Name = '{0}'", NAME);
                     break;
 
                 /*
@@ -216,19 +184,7 @@ namespace Little_Stat
                  * Reaction = INT + PER + INS
                  */
                 case "Reaction":
-                    str = string.Format("SELECT Intellect, Perception, Instinct FROM MajorStats WHERE Name = '{0}'", NAME);
-                    using (SQLiteCommand cmd = new SQLiteCommand(str, db))
-                    {
-                        db.Open();
-                        SQLiteDataReader reader = cmd.ExecuteReader();
-                        while (reader.Read())
-                        {
-                            result = Convert.ToInt32(reader["Intellect"]) + Convert.ToInt32(reader["Perception"])
-                                + Convert.ToInt32(reader["Instinct"]);
-                        }
-                        reader.Close();
-                        db.Close();
-                    }
+                    str = string.Format("SELECT Intellect + Perception + Instinct FROM MajorStats WHERE Name = '{0}'", NAME);
                     break;
 
                 /*
@@ -237,22 +193,17 @@ namespace Little_Stat
                  * Encumbrance = STR + STR + VIG
                  */
                 case "MaxEncumberance":
-                    str = string.Format("SELECT Strength, Vigour FROM MajorStats WHERE Name = '{0}'", NAME);
-                    using (SQLiteCommand cmd = new SQLiteCommand(str, db))
-                    {
-                        db.Open();
-                        SQLiteDataReader reader = cmd.ExecuteReader();
-                        while (reader.Read())
-                        {
-                            result = Convert.ToInt32(reader["Strength"]) + Convert.ToInt32(reader["Strength"])
-                                + Convert.ToInt32(reader["Vigour"]);
-                        }
-                        reader.Close();
-                        db.Close();
-                    }
+                    str = string.Format("SELECT Strength + Strength + Vigour FROM MajorStats WHERE Name = '{0}'", NAME);
                     break;
 
 
+            }
+
+            using (SQLiteCommand cmd = new SQLiteCommand(str, db))
+            {
+                db.Open();
+                result = Convert.ToInt32(cmd.ExecuteScalar());
+                db.Close();
             }
             return result;
         }
@@ -260,6 +211,10 @@ namespace Little_Stat
 
         /*
          * No more methods here
+         */
+
+        /*
+         * No local variables
          */
     }
 }
