@@ -7,107 +7,133 @@ using System.Data.SQLite;
 
 namespace Little_Stat
 {
-    class Character
+    class Inventory
     {
-        /* Create database connection object */
         SQLiteConnection db = new SQLiteConnection(@"Data Source=..\..\LittleStat.s3db");
 
 
-        /*
-         * Checks if character exists in database
-         * 
-         * Args: Name of character to check
-         * 
-         * Returns: true or false
-         */
-        public bool Exists(string NAME)
+        /// <summary>
+        /// Adds item to the database or increments
+        /// quantity of existing same item
+        /// </summary>
+        /// <param name="CHARNAME">name of character to add item to</param>
+        /// <param name="ITEMNAME">name of item</param>
+        public void AddItem(string CHARNAME, string ITEMNAME)
         {
-            using (SQLiteCommand cmd = new SQLiteCommand("SELECT count(*) FROM MajorStats WHERE name = @name", db))
+            
+            using (SQLiteCommand cmd = new SQLiteCommand("SELECT Quantity FROM Inventory WHERE BelongsTo = @BelongsTo AND ItemName = @ItemName", db))
             {
-                cmd.Parameters.Add(new SQLiteParameter("@name", NAME));
+                cmd.Parameters.Add(new SQLiteParameter("@BelongsTo", CHARNAME));
+                cmd.Parameters.Add(new SQLiteParameter("@ItemName", ITEMNAME));
 
                 db.Open();
-                int count = Convert.ToInt32(cmd.ExecuteScalar());
+                int quantity = Convert.ToInt32(cmd.ExecuteScalar());
+                db.Close();
+                cmd.Parameters.Add(new SQLiteParameter("@NewQuantity", quantity + 1));
+
+                if(quantity > 0)    cmd.CommandText = "UPDATE Inventory SET Quantity = @NewQuantity WHERE BelongsTo = @BelongsTo AND ItemName = @ItemName";
+                else                cmd.CommandText = "INSERT INTO Inventory (ItemName, BelongsTo) VALUES (@ItemName, @BelongsTo)";
+
+                db.Open();
+                cmd.ExecuteNonQuery();
                 db.Close();
 
-                if (count == 0) return false;
-                else return true;
             }
         }
 
 
-        /* 
-         * Creates character in database. Should
-         * only be called after checking if character
-         * already exists.
-         * 
-         * Args: NAME = name of character to create
-         * 
-         * Returns: Nothing
-         */
-        public void Create(string NAME)
+        /// <summary>
+        /// Removes item from database by decrementing
+        /// quantity or deleting item
+        /// </summary>
+        /// <param name="CHARNAME">nane of character to remove item from</param>
+        /// <param name="ITEMNAME">name of item</param>
+        public void RemoveItem(string CHARNAME, string ITEMNAME)
         {
-            using (SQLiteCommand cmd = new SQLiteCommand("INSERT INTO MajorStats (Name) VALUES (@name)", db))
+
+            using (SQLiteCommand cmd = new SQLiteCommand("SELECT Quantity FROM Inventory WHERE BelongsTo = @BelongsTo AND ItemName = @ItemName", db))
             {
-                cmd.Parameters.Add(new SQLiteParameter("@name", NAME));
+                cmd.Parameters.Add(new SQLiteParameter("@BelongsTo", CHARNAME));
+                cmd.Parameters.Add(new SQLiteParameter("@ItemName", ITEMNAME));
+
+                db.Open();
+                int quantity = Convert.ToInt32(cmd.ExecuteScalar());
+                db.Close();
+                cmd.Parameters.Add(new SQLiteParameter("@NewQuantity", quantity - 1));
+
+                if (quantity > 1)   cmd.CommandText = "UPDATE Inventory SET Quantity = @NewQuantity WHERE BelongsTo = @BelongsTo AND ItemName = @ItemName";
+                else                cmd.CommandText = "DELETE FROM Inventory WHERE BelongsTo = @BelongsTo AND ItemName = @ItemName";
+
                 db.Open();
                 cmd.ExecuteNonQuery();
                 db.Close();
+
             }
         }
 
-        public void Delete(string NAME)
+
+        /// <summary>
+        /// Checks if item exists
+        /// </summary>
+        /// <param name="CHARNAME">name of character</param>
+        /// <param name="ITEMNAME">name of item</param>
+        /// <returns></returns>
+        public bool Exists(string CHARNAME, string ITEMNAME)
         {
-            using (SQLiteCommand cmd = new SQLiteCommand("DELETE FROM MajorStats WHERE Name = @Name", db))
+            using (SQLiteCommand cmd = new SQLiteCommand("SELECT Quantity FROM Inventory WHERE BelongsTo = @BelongsTo AND ItemName = @ItemName", db))
             {
-                cmd.Parameters.Add(new SQLiteParameter("@name", NAME));
+                cmd.Parameters.Add(new SQLiteParameter("@BelongsTo", CHARNAME));
+                cmd.Parameters.Add(new SQLiteParameter("@ItemName", ITEMNAME));
+
                 db.Open();
-                cmd.ExecuteNonQuery();
+                int quantity = Convert.ToInt32(cmd.ExecuteScalar());
                 db.Close();
+
+                if (quantity > 0) return true;
+                else return false;
             }
         }
         
 
-        /*
-         * Gets a list of characters in database
-         * 
-         * Returns: array of character names
-         */
-        public List<string> ListChars()
+        /// <summary>
+        /// Returns a list of items held by a character
+        /// </summary>
+        /// <returns>List containing item names</returns>
+        public List<string> ListItems(string CHARNAME)
         {
-            List<String> namesList = new List<string>();
-           
-            using (SQLiteCommand cmd = new SQLiteCommand("SELECT Name FROM MajorStats", db))
+            List<String> itemNameList = new List<string>();
+
+            using (SQLiteCommand cmd = new SQLiteCommand("SELECT ItemName FROM Inventory where BelongsTo = @BelongsTo", db))
             {
+                cmd.Parameters.Add(new SQLiteParameter("@BelongsTo", CHARNAME));
                 db.Open();
                 SQLiteDataReader reader = cmd.ExecuteReader();
                 int i = 0;
                 while (reader.Read())
                 {
-                    namesList.Add(reader.GetString(i));
+                    itemNameList.Add(reader.GetString(i));
                 }
                 reader.Close();
                 db.Close();
             }
-            return namesList;
+            return itemNameList;
         }
 
 
-        /*
-         * Sets a stat of the selected character
-         * 
-         * Args: NAME = character name to set stat of
-         *       STAT = the stat to set
-         *       value = the value to set the stat to
-         *       
-         * Returns: Nothing..
-         */
-        public void SetCharStats(string NAME, string STAT, float value)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="CHARNAME"></param>
+        /// <param name="ITEMNAME"></param>
+        /// <param name="STAT"></param>
+        /// <param name="value"></param>
+        public void SetItemStats(string CHARNAME, string ITEMNAME, string STAT, float value)
         {
-            string str = string.Format("UPDATE MajorStats SET {0} = @value WHERE Name = @name", STAT);
+            string str = string.Format("UPDATE Inventory SET {0} = @value WHERE ItemName = @ItemName AND BelongsTo = @BelongsTo", STAT);
             using (SQLiteCommand cmd = new SQLiteCommand(str, db))
             {
-                cmd.Parameters.Add(new SQLiteParameter("@name", NAME));
+                cmd.Parameters.Add(new SQLiteParameter("@ItemName", ITEMNAME));
+                cmd.Parameters.Add(new SQLiteParameter("@BelongsTo", CHARNAME));
                 cmd.Parameters.Add(new SQLiteParameter("@value", value));
 
                 db.Open();
@@ -118,13 +144,11 @@ namespace Little_Stat
 
 
         /// <summary>
-        /// Returns major stats of a character from the database.
-        /// If it's a minor stat, it will calculate from major
-        /// stats and return the value
+        /// 
         /// </summary>
-        /// <param name="NAME">The name of the character</param>
-        /// <param name="STAT">Stat required</param>
-        /// <returns>Raw float value of the stat</returns>
+        /// <param name="NAME"></param>
+        /// <param name="STAT"></param>
+        /// <returns></returns>
         public float ReturnStat(string NAME, string STAT)
         {
             float result = 0;
@@ -161,7 +185,7 @@ namespace Little_Stat
                  * Max mana calculation
                  * 
                  * Base mainly on Mental stats
-                 */ 
+                 */
                 case "MaxMana":
                     str = string.Format("SELECT Vigour + Intellect + Tenacity FROM MajorStats WHERE Name = '{0}'", NAME);
                     break;
@@ -170,7 +194,7 @@ namespace Little_Stat
                  * Max stamina calculation
                  * 
                  * Base on phisical stats
-                 */ 
+                 */
                 case "MaxStamina":
                     str = string.Format("SELECT Strength + Agility + Vigour FROM MajorStats WHERE Name = '{0}'", NAME);
                     break;

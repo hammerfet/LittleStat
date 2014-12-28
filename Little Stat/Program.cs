@@ -8,10 +8,11 @@ namespace Little_Stat
 {
     class Program
     {
-        /*
-         * Main application is simply
-         * a console based user interface
-         */
+        /// <summary>
+        /// Main application for Little Stat - Console
+        /// based RPG combat engine
+        /// </summary>
+        /// <param name="args"></param>
         static void Main(string[] args)
         {
             while (true)
@@ -26,12 +27,10 @@ namespace Little_Stat
                 Console.WriteLine("    Main menu");
                 Console.WriteLine("    ---------");
                 Console.WriteLine("");
-                Console.WriteLine("    1 - Display Character Info");
+                Console.WriteLine("    1 - List Characters/Inventory");
                 Console.WriteLine("    2 - Create/Modify Character");
-                Console.WriteLine("");
-                Console.WriteLine("    3 - Display Inventory");
-                Console.WriteLine("    4 - Add/Remove Inventory");
-                Console.WriteLine("");
+                Console.WriteLine("    3 - ");
+                Console.WriteLine("    4 - ");
                 Console.WriteLine("    5 - ");
                 Console.WriteLine("    6 - ");
                 Console.WriteLine("    7 - ");
@@ -64,12 +63,11 @@ namespace Little_Stat
 
                     case ConsoleKey.D4:
                     case ConsoleKey.NumPad4:
-                        //
                         break;
 
                     case ConsoleKey.D5:
                     case ConsoleKey.NumPad5:
-                        //
+                        
                         break;
 
                     case ConsoleKey.D6:
@@ -90,16 +88,13 @@ namespace Little_Stat
         }
 
 
-        /*
-         * Creates a character, with all base stats
-         * Checks if the character name is a good length
-         * and if it already exists. It will give an option
-         * to overwrite.
-         * 
-         * Args: none
-         * 
-         * Returns: only if bad parameter or user cancels
-         */
+        /// <summary>
+        /// Creates a character, with all base stats.
+        /// The function checks if the character name is a
+        /// good length or if it already exists. 
+        /// It will give an option to overwrite or return
+        /// with an error message
+        /// </summary>
         static void CreateChar()
         {
             // Header
@@ -170,13 +165,12 @@ namespace Little_Stat
         }
 
 
-        /*
-         * Displays all characters in database.
-         * User can then select a character to
-         * see details of.
-         * 
-         * Returns: only if user types invalid character
-         */
+        /// <summary>
+        /// Displays all characters in database,
+        /// user can then select a character to see
+        /// their details. Returns if user types in
+        /// an invalid character name
+        /// </summary>
         static void DisplayChar()
         {
             // Header
@@ -188,7 +182,7 @@ namespace Little_Stat
             Console.WriteLine("");
             
             // Get list of characters
-            var NamesList = character.GetListOfChars();
+            var NamesList = character.ListChars();
             NamesList.ForEach(delegate(String name)
                 {   Console.WriteLine("    {0}", name);   }
             );
@@ -196,7 +190,7 @@ namespace Little_Stat
             // Let the user type in the character name to get info for
             Console.WriteLine("");
             Console.ForegroundColor = ConsoleColor.Blue;
-            Console.Write("  Select Character to get info: ");
+            Console.Write("  Type character name to get more info: ");
             string characterName = Console.ReadLine();
             Console.ResetColor();
 
@@ -228,7 +222,6 @@ namespace Little_Stat
                 Console.WriteLine("\n");
                 Console.Write("    Experience: {0}", character.ReturnStat(characterName, "EXP"));
                 Console.WriteLine("\n");
-
             }
             
             // Notify user if character doesnt exist
@@ -243,19 +236,69 @@ namespace Little_Stat
 
             // Press any key to return
             Console.ForegroundColor = ConsoleColor.Blue;
-            Console.WriteLine("  Press any key to return or 'Del' to remove character");
+            Console.WriteLine("  Press 'I' to list characters inventory");
+            Console.WriteLine("  Press 'Del' to remove character");
+            Console.WriteLine("  Press any key to return");
             Console.ResetColor();
             var menu = Console.ReadKey();
             if (menu.Key == ConsoleKey.Delete) character.Delete(characterName);
+            if (menu.Key == ConsoleKey.I) ListCharInventory(characterName);
 
             return;
         }
 
+        static void ListCharInventory(string NAME)
+        {
+            Console.Clear();
 
-        /*
-         * Converts the text input into a float
-         * shows an error message if not suceeded
-         */
+            // Get list of characters
+            var ItemList = inventory.ListItems(NAME);
+            ItemList.ForEach(delegate(String name)
+            { Console.WriteLine("    {0}", name); }
+            );
+
+            // Let the user type in the character name to get info for
+            Console.WriteLine("");
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.Write("  Type item name to get more info: ");
+            string ItemName = Console.ReadLine();
+            Console.ResetColor();
+
+            // Print out info is character exists
+            if (inventory.Exists(NAME, ItemName))
+            {
+                Console.WriteLine("    Exists");
+            }
+
+            // Notify user if character doesnt exist
+            else
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("");
+                Console.WriteLine("  No such item. ");
+                Console.WriteLine("");
+                Console.ResetColor();
+            }
+
+            // Press any key to return
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.WriteLine("  Press 'A' to add an item");
+            Console.WriteLine("  Press 'T' to transfer an item");
+            Console.WriteLine("  Press 'Del' to remove an item");
+            Console.WriteLine("  Press any key to return");
+            Console.ResetColor();
+            var menu = Console.ReadKey();
+            //if (menu.Key == ConsoleKey.A) ;
+            //if (menu.Key == ConsoleKey.T) ;
+            if (menu.Key == ConsoleKey.Delete) inventory.RemoveItem(NAME, ItemName);
+
+            return;
+        }
+
+        /// <summary>
+        /// Converts the text input into a float shows an error message if not suceeded
+        /// </summary>
+        /// <returns></returns>
         static float GetFloatFromConsole()
         {
             while (true)
@@ -281,6 +324,7 @@ namespace Little_Stat
          * Local variable declarations
          */
         static Character character = new Character();
+        static Inventory inventory = new Inventory();
         
         float STRENGTH;
         float VIGOUR;
