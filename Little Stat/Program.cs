@@ -241,12 +241,28 @@ namespace Little_Stat
             Console.WriteLine("  Press any key to return");
             Console.ResetColor();
             var menu = Console.ReadKey();
-            if (menu.Key == ConsoleKey.Delete) character.Delete(characterName);
+            if (menu.Key == ConsoleKey.Delete) DeleteChar(characterName);
             if (menu.Key == ConsoleKey.I) ListCharInventory(characterName);
 
             return;
         }
 
+
+        /// <summary>
+        /// Removes character and their inventory
+        /// </summary>
+        /// <param name="NAME">Name of character</param>
+        static void DeleteChar(string NAME)
+        {
+            character.Delete(NAME);
+            inventory.RemoveChar(NAME);
+        }
+
+
+        /// <summary>
+        /// Lists the Inventory of a character
+        /// </summary>
+        /// <param name="NAME">Name of character</param>
         static void ListCharInventory(string NAME)
         {
             Console.Clear();

@@ -144,109 +144,36 @@ namespace Little_Stat
 
 
         /// <summary>
-        /// 
+        /// Returns the numerical modifier stat for an
+        /// item of a specific character
         /// </summary>
-        /// <param name="NAME"></param>
-        /// <param name="STAT"></param>
+        /// <param name="CHARNAME">Name of character</param>
+        /// <param name="ITEMNAME">Name of item</param>
+        /// <param name="STAT">stat to return</param>
         /// <returns></returns>
-        public float ReturnStat(string NAME, string STAT)
+        public float ReturnModifierStat(string CHARNAME, string ITEMNAME, string STAT)
         {
             float result = 0;
             string str = "";
 
             switch (STAT)
             {
-                case "Strength": // All these stats are base stats, the can be called directly from the db
-                case "Vigour":
-                case "Agility":
-                case "Intellect":
-                case "Perception":
-                case "Tenacity":
-                case "Charisma":
-                case "Instinct":
-                case "Communication":
-                case "CurrentHP":
-                case "CurrentMana":
-                case "CurrentStamina":
-                case "EXP":
-                    str = string.Format("SELECT {0} FROM MajorStats WHERE Name = '{1}'", STAT, NAME);
+                case "Quantity":
+                case "Weight":
+                case "STRModifier":
+                case "VIGModifier":
+                case "AGIModifier":
+                case "INTModifier":
+                case "PERModifier":
+                case "TENModifier":
+                case "CHAModifier":
+                case "INSModifier":
+                case "COMModifier":
+                    str = string.Format("SELECT {0} FROM Inventory WHERE ItemName = '{1}' AND BelongsTo = '{2}'", STAT, ITEMNAME, CHARNAME);
                     break;
 
-                /*
-                 * Max hit points calculation
-                 * 
-                 * Mased mainly on phisical stats
-                 */
-                case "MaxHP":
-                    str = string.Format("SELECT ((Strength + Vigour + Agility) * 3) + ((Intellect + Perception + Tenacity) * 2) + (Charisma + Instinct + Communication) FROM MajorStats WHERE Name = '{0}'", NAME);
-                    break;
-
-                /*
-                 * Max mana calculation
-                 * 
-                 * Base mainly on Mental stats
-                 */
-                case "MaxMana":
-                    str = string.Format("SELECT Vigour + Intellect + Tenacity FROM MajorStats WHERE Name = '{0}'", NAME);
-                    break;
-
-                /*
-                 * Max stamina calculation
-                 * 
-                 * Base on phisical stats
-                 */
-                case "MaxStamina":
-                    str = string.Format("SELECT Strength + Agility + Vigour FROM MajorStats WHERE Name = '{0}'", NAME);
-                    break;
-
-                /*
-                 * Movement calculation
-                 * 
-                 * Movement = AGI + VIG
-                 */
-                case "Movement":
-                    str = string.Format("SELECT Agility + Vigour + Instinct FROM MajorStats WHERE Name = '{0}'", NAME);
-                    break;
-
-                /*
-                 * Phys defence or Fortitude calculation
-                 * 
-                 * Fortitude = AGI + VIG + INS
-                 */
-                case "PhysicalDefence":
-                case "Fortitude":
-                    str = string.Format("SELECT Agility + Vigour + Instinct FROM MajorStats WHERE Name = '{0}'", NAME);
-                    break;
-
-                /*
-                 * Men defence or Will calculation
-                 * 
-                 * Will = TEN + INT + INS
-                 */
-                case "MentalDefence":
-                case "Will":
-                    str = string.Format("SELECT Tenacity + Intellect + Instinct FROM MajorStats WHERE Name = '{0}'", NAME);
-                    break;
-
-                /*
-                 * Reaction calculation
-                 * 
-                 * Reaction = INT + PER + INS
-                 */
-                case "Reaction":
-                    str = string.Format("SELECT Intellect + Perception + Instinct FROM MajorStats WHERE Name = '{0}'", NAME);
-                    break;
-
-                /*
-                 * Encumbrance calculation
-                 * 
-                 * Encumbrance = STR + STR + VIG
-                 */
-                case "MaxEncumberance":
-                    str = string.Format("SELECT Strength + Strength + Vigour FROM MajorStats WHERE Name = '{0}'", NAME);
-                    break;
-
-
+                default:
+                    return 0;
             }
 
             using (SQLiteCommand cmd = new SQLiteCommand(str, db))
@@ -256,6 +183,54 @@ namespace Little_Stat
                 db.Close();
             }
             return result;
+        }
+
+
+        /// <summary>
+        /// Gives all inventory to the GM when a character
+        /// is removed from the database
+        /// </summary>
+        /// <param name="NAME">Name of character</param>
+        public void RemoveChar(string CHARNAME)
+        {
+            using (SQLiteCommand cmd = new SQLiteCommand("UPDATE Inventory SET BelongsTo = 'GM' WHERE BelongsTo = @BelongsTo", db))
+            {
+                cmd.Parameters.Add(new SQLiteParameter("@BelongsTo", CHARNAME));
+
+                db.Open();
+                cmd.ExecuteNonQuery();
+                db.Close();
+            }
+        }
+
+
+        /// <summary>
+        /// Transfers an item from one character to another
+        /// </summary>
+        /// <param name="FROM">Character to transfer from</param>
+        /// <param name="TO">character to transfer to</param>
+        public void TransferItem(string FROM, string TO)
+        {
+            using (SQLiteCommand cmd = new SQLiteCommand("UPDATE Inventory SET BelongsTo = @TO WHERE BelongsTo = @FROM", db))
+            {
+                cmd.Parameters.Add(new SQLiteParameter("@FROM", FROM));
+                cmd.Parameters.Add(new SQLiteParameter("@TO", TO));
+
+                db.Open();
+                cmd.ExecuteNonQuery();
+                db.Close();
+            }
+        }
+
+
+        /// <summary>
+        /// Copies item from one character to another
+        /// </summary>
+        /// <param name="FROM">Character to copy item from</param>
+        /// <param name="TO">Character to copy item to</param>
+        public void CopyItem(string FROM, string TO)
+        {
+            
         }
 
 
