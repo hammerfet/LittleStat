@@ -73,7 +73,7 @@ namespace Little_Stat
          * 
          * Returns: array of character names
          */
-        public List<string> ListChars()
+        public List<string> List()
         {
             List<String> namesList = new List<string>();
            
@@ -102,9 +102,32 @@ namespace Little_Stat
          *       
          * Returns: Nothing..
          */
-        public void SetCharStats(string NAME, string STAT, float value)
+        public void SetStat(string NAME, string STAT, float value)
         {
-            string str = string.Format("UPDATE MajorStats SET {0} = @value WHERE Name = @name", STAT);
+            string str = "";
+
+            switch (STAT)
+            {
+                case "Strength": // All these stats are base stats, the can be called directly from the db
+                case "Vigour":
+                case "Agility":
+                case "Intellect":
+                case "Perception":
+                case "Tenacity":
+                case "Charisma":
+                case "Instinct":
+                case "Communication":
+                case "CurrentHP":
+                case "CurrentMana":
+                case "CurrentStamina":
+                case "EXP":
+                    str = string.Format("UPDATE MajorStats SET {0} = @value WHERE Name = @name", STAT);
+                    break;
+
+                default:
+                    return;
+            }
+
             using (SQLiteCommand cmd = new SQLiteCommand(str, db))
             {
                 cmd.Parameters.Add(new SQLiteParameter("@name", NAME));
@@ -125,7 +148,7 @@ namespace Little_Stat
         /// <param name="NAME">The name of the character</param>
         /// <param name="STAT">Stat required</param>
         /// <returns>Raw float value of the stat</returns>
-        public float ReturnStat(string NAME, string STAT)
+        public float GetStat(string NAME, string STAT)
         {
             float result = 0;
             string str = "";
@@ -221,6 +244,9 @@ namespace Little_Stat
                 case "MaxEncumberance":
                     str = string.Format("SELECT Strength + Strength + Vigour FROM MajorStats WHERE Name = '{0}'", NAME);
                     break;
+
+                default:
+                    return 0;
 
 
             }
