@@ -6,15 +6,11 @@ using System.Threading.Tasks;
 
 namespace Little_Stat
 {
-    class ProgramHelper
+    class Combat
     {
+        public void OneVOne(string FIRSTCHAR, string SECONDCHAR)
+        {
 
-
-
-        /*
-         * Local variables
-         */
-
-
+        }
     }
 }

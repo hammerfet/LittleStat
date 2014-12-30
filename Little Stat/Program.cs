@@ -90,6 +90,7 @@ namespace Little_Stat
 
                     case ConsoleKey.D9:
                     case ConsoleKey.NumPad9:
+                        Combat1v1();
                         break;
 
                     case ConsoleKey.Escape:
@@ -251,12 +252,14 @@ namespace Little_Stat
             // Press any key to return
             Console.ForegroundColor = ConsoleColor.Blue;
             Console.WriteLine("  Press 'I' to list characters inventory");
+            Console.WriteLine("  Press 'F' to display character feats");
             Console.WriteLine("  Press 'Del' to remove character");
             Console.WriteLine("  Press any key to return");
             Console.ResetColor();
             var menu = Console.ReadKey();
             if (menu.Key == ConsoleKey.Delete) DeleteChar(characterName);
             if (menu.Key == ConsoleKey.I) DisplayInventory(characterName);
+            if (menu.Key == ConsoleKey.F) DisplayFeats(characterName);
 
             return;
         }
@@ -317,58 +320,145 @@ namespace Little_Stat
 
             // Finally write or overwite character stats
             Console.Write("    Enter item description: ");
-            inventory.SetDescription(CHARNAME, ITEMNAME, Console.ReadLine());
+            inventory.SetDescription(ITEMNAME, Console.ReadLine());
 
             Console.Write("    Enter item QUANTITY: ");
-            inventory.SetStat(CHARNAME, ITEMNAME, "Quantity", GetFloatFromConsole());
+            inventory.SetStat(ITEMNAME, "Quantity", GetFloatFromConsole());
 
             Console.Write("    Enter item WEIGHT: ");
-            inventory.SetStat(CHARNAME, ITEMNAME, "Weight", GetFloatFromConsole());
+            inventory.SetStat(ITEMNAME, "Weight", GetFloatFromConsole());
 
             Console.Write("    Enter STRENGTH modifier: ");
-            inventory.SetStat(CHARNAME, ITEMNAME, "STRModifier", GetFloatFromConsole());
+            inventory.SetStat(ITEMNAME, "STRModifier", GetFloatFromConsole());
 
             Console.Write("    Enter VIGOUR modifier: ");
-            inventory.SetStat(CHARNAME, ITEMNAME, "VIGModifier", GetFloatFromConsole());
+            inventory.SetStat(ITEMNAME, "VIGModifier", GetFloatFromConsole());
 
             Console.Write("    Enter AGILITY modifier: ");
-            inventory.SetStat(CHARNAME, ITEMNAME, "AGIModifier", GetFloatFromConsole());
+            inventory.SetStat(ITEMNAME, "AGIModifier", GetFloatFromConsole());
 
             Console.Write("    Enter INTELLECT modifier: ");
-            inventory.SetStat(CHARNAME, ITEMNAME, "INTModifier", GetFloatFromConsole());
+            inventory.SetStat(ITEMNAME, "INTModifier", GetFloatFromConsole());
 
             Console.Write("    Enter PERCEPTION modifier: ");
-            inventory.SetStat(CHARNAME, ITEMNAME, "PERModifier", GetFloatFromConsole());
+            inventory.SetStat(ITEMNAME, "PERModifier", GetFloatFromConsole());
 
             Console.Write("    Enter TENACITY modifier: ");
-            inventory.SetStat(CHARNAME, ITEMNAME, "TENModifier", GetFloatFromConsole());
+            inventory.SetStat(ITEMNAME, "TENModifier", GetFloatFromConsole());
 
             Console.Write("    Enter CHARISMA modifier: ");
-            inventory.SetStat(CHARNAME, ITEMNAME, "CHAModifier", GetFloatFromConsole());
+            inventory.SetStat(ITEMNAME, "CHAModifier", GetFloatFromConsole());
 
             Console.Write("    Enter INSTINCT modifier: ");
-            inventory.SetStat(CHARNAME, ITEMNAME, "INSModifier", GetFloatFromConsole());
+            inventory.SetStat(ITEMNAME, "INSModifier", GetFloatFromConsole());
 
             Console.Write("    Enter COMMUNICATION modifier: ");
-            inventory.SetStat(CHARNAME, ITEMNAME, "COMModifier", GetFloatFromConsole());
+            inventory.SetStat(ITEMNAME, "COMModifier", GetFloatFromConsole());
 
             Console.Write("    Enter WEAPON power: ");
-            inventory.SetStat(CHARNAME, ITEMNAME, "WeaponValue", GetFloatFromConsole());
+            inventory.SetStat(ITEMNAME, "WeaponValue", GetFloatFromConsole());
 
             Console.Write("    Enter ARMOR power: ");
-            inventory.SetStat(CHARNAME, ITEMNAME, "ArmorValue", GetFloatFromConsole());
+            inventory.SetStat(ITEMNAME, "ArmorValue", GetFloatFromConsole());
 
             Console.Write("    Enter HP BOOST modifier: ");
-            inventory.SetStat(CHARNAME, ITEMNAME, "HPBoost", GetFloatFromConsole());
+            inventory.SetStat(ITEMNAME, "HPBoost", GetFloatFromConsole());
 
             Console.Write("    Enter MANA BOOST modifier: ");
-            inventory.SetStat(CHARNAME, ITEMNAME, "ManaBoost", GetFloatFromConsole());
+            inventory.SetStat(ITEMNAME, "ManaBoost", GetFloatFromConsole());
 
             Console.Write("    Enter STAMINA BOOST modifier: ");
-            inventory.SetStat(CHARNAME, ITEMNAME, "StaminaBoost", GetFloatFromConsole());
+            inventory.SetStat(ITEMNAME, "StaminaBoost", GetFloatFromConsole());
 
             Console.Write("    Enter how many TURNS the item lasts (0 for inf): ");
-            inventory.SetStat(CHARNAME, ITEMNAME, "LastsTurns", GetFloatFromConsole());
+            inventory.SetStat(ITEMNAME, "LastsTurns", GetFloatFromConsole());
+
+        }
+
+
+        /// <summary>
+        /// Creates new feat within the database.
+        /// User must enter all related stats to the feat
+        /// </summary>
+        /// <param name="CHARNAME">Name of character</param>
+        static void CreateFeat(string CHARNAME)
+        {
+            // Header
+            Console.Clear();
+            Console.WriteLine("");
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("  Create new Feat");
+            Console.WriteLine("  ---------------");
+            Console.ResetColor();
+            Console.WriteLine("");
+            Console.Write("    Enter feat name: ");
+
+            // Get name and check string length
+            string FEATNAME = Console.ReadLine();
+            if (FEATNAME.Length > 30 || FEATNAME.Length < 1)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("\n    Feat name length has to be between than 0 and 30, \n    Press any key to return..");
+                Console.ResetColor();
+                var menu = Console.ReadKey();
+                return;
+            }
+
+            // Check if character exists
+            if (feats.Exists(CHARNAME, FEATNAME))
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("\n    Item already exists, \n    Press Enter to overwrite or any key to return..\n");
+                Console.ResetColor();
+                var menu = Console.ReadKey();
+                if (menu.Key != ConsoleKey.Enter) return;
+            }
+
+            // Create character if doesn't exist
+            else feats.Create(CHARNAME, FEATNAME);
+
+            // Finally write or overwite character stats
+            Console.Write("    Enter item description: ");
+            feats.SetDescription(FEATNAME, Console.ReadLine());
+
+            Console.Write("    Enter HP HIT modifier: ");
+            feats.SetStat(FEATNAME, "HealthHit", GetFloatFromConsole());
+
+            Console.Write("    Enter MANA HIT modifier: ");
+            feats.SetStat(FEATNAME, "ManaHit", GetFloatFromConsole());
+
+            Console.Write("    Enter STAMINA HIT modifier: ");
+            feats.SetStat(FEATNAME, "StaminaHit", GetFloatFromConsole());
+
+            Console.Write("    Enter STRENGTH modifier: ");
+            feats.SetStat(FEATNAME, "STRModifier", GetFloatFromConsole());
+
+            Console.Write("    Enter VIGOUR modifier: ");
+            feats.SetStat(FEATNAME, "VIGModifier", GetFloatFromConsole());
+
+            Console.Write("    Enter AGILITY modifier: ");
+            feats.SetStat(FEATNAME, "AGIModifier", GetFloatFromConsole());
+
+            Console.Write("    Enter INTELLECT modifier: ");
+            feats.SetStat(FEATNAME, "INTModifier", GetFloatFromConsole());
+
+            Console.Write("    Enter PERCEPTION modifier: ");
+            feats.SetStat(FEATNAME, "PERModifier", GetFloatFromConsole());
+
+            Console.Write("    Enter TENACITY modifier: ");
+            feats.SetStat(FEATNAME, "TENModifier", GetFloatFromConsole());
+
+            Console.Write("    Enter CHARISMA modifier: ");
+            feats.SetStat(FEATNAME, "CHAModifier", GetFloatFromConsole());
+
+            Console.Write("    Enter INSTINCT modifier: ");
+            feats.SetStat(FEATNAME, "INSModifier", GetFloatFromConsole());
+
+            Console.Write("    Enter COMMUNICATION modifier: ");
+            feats.SetStat(FEATNAME, "COMModifier", GetFloatFromConsole());
+
+            Console.Write("    Enter how many TURNS the item lasts (1 for single hit): ");
+            feats.SetStat(FEATNAME, "LastsTurns", GetFloatFromConsole());
 
         }
 
@@ -495,9 +585,123 @@ namespace Little_Stat
 
 
         /// <summary>
+        /// Displays the characters feats and attacks
+        /// </summary>
+        /// <param name="CHARNAME">Name of character</param>
+        static void DisplayFeats(string CHARNAME)
+        {
+            // Header
+            Console.Clear();
+            Console.WriteLine("");
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("  Feats belonging to: {0}", CHARNAME);
+            Console.WriteLine("  -------------------");
+            Console.ResetColor();
+            Console.WriteLine("");
+
+            // Get list of items
+            var ItemList = feats.List(CHARNAME);
+            ItemList.ForEach(delegate(String FEATNAME)
+                {
+                    string FEATDESC = feats.GetDescription(CHARNAME, FEATNAME);
+                    Console.WriteLine("    {0} - {1}", FEATNAME, FEATDESC);
+                }
+            );
+
+            // Let the user type in the item name to get info for
+            Console.WriteLine("");
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.Write("  Type feat name to get more info, or Enter to skip: ");
+            string SELECTEDFEAT = Console.ReadLine();
+            Console.ResetColor();
+
+            // Print out info is character exists
+            if (feats.Exists(CHARNAME, SELECTEDFEAT))
+            {
+                Console.WriteLine("");
+                Console.Write("    Health Hit: {0}", feats.GetStat(CHARNAME, SELECTEDFEAT, "HealthHit"));
+                Console.Write("    Mana Hit: {0}", feats.GetStat(CHARNAME, SELECTEDFEAT, "ManaHit"));
+                Console.Write("    Stamina Hit: {0}", feats.GetStat(CHARNAME, SELECTEDFEAT, "StaminaHit"));
+                Console.WriteLine("\n");
+                Console.Write("    STR modifier: {0}", feats.GetStat(CHARNAME, SELECTEDFEAT, "STRModifier"));
+                Console.Write("    VIG modifier: {0}", feats.GetStat(CHARNAME, SELECTEDFEAT, "VIGModifier"));
+                Console.Write("    AGI modifier: {0}", feats.GetStat(CHARNAME, SELECTEDFEAT, "AGIModifier"));
+                Console.WriteLine("");
+                Console.Write("    INT modifier: {0}", feats.GetStat(CHARNAME, SELECTEDFEAT, "INTModifier"));
+                Console.Write("    PER modifier: {0}", feats.GetStat(CHARNAME, SELECTEDFEAT, "PERModifier"));
+                Console.Write("    TEN modifier: {0}", feats.GetStat(CHARNAME, SELECTEDFEAT, "TENModifier"));
+                Console.WriteLine("");
+                Console.Write("    CHA modifier: {0}", feats.GetStat(CHARNAME, SELECTEDFEAT, "CHAModifier"));
+                Console.Write("    INS modifier: {0}", feats.GetStat(CHARNAME, SELECTEDFEAT, "INSModifier"));
+                Console.Write("    COM modifier: {0}", feats.GetStat(CHARNAME, SELECTEDFEAT, "COMModifier"));
+                Console.WriteLine("\n");
+                Console.Write("    Item lasts for {0} turns", feats.GetStat(CHARNAME, SELECTEDFEAT, "LastsTurns"));
+                Console.WriteLine("\n");
+
+                // Ask to add, transfer or copy item
+                Console.ForegroundColor = ConsoleColor.Blue;
+                Console.WriteLine("  Press 'A' to add a feat");
+                Console.WriteLine("  Press 'T' to transfer a feat");
+                //Console.WriteLine("  Press 'C' to copy item");
+                Console.WriteLine("  Press 'Del' to remove feat");
+                Console.WriteLine("  Press any key to return");
+                Console.ResetColor();
+
+                // Detecting keystroke
+                var menu = Console.ReadKey();
+                Console.Write("\b \b\n");
+
+                // Delete item
+                if (menu.Key == ConsoleKey.Delete) feats.Delete(CHARNAME, SELECTEDFEAT);
+
+                // Copy or transfer item
+                if (menu.Key == ConsoleKey.A) CreateFeat(CHARNAME);
+                if (menu.Key == ConsoleKey.T || menu.Key == ConsoleKey.C)
+                {
+                    Console.Write("  Enter new owners name: ");
+                    string NEWOWNER = Console.ReadLine();
+                    if (character.Exists(NEWOWNER))
+                    {
+                        if (menu.Key == ConsoleKey.T) feats.Transfer(SELECTEDFEAT, CHARNAME, NEWOWNER);
+                        //if (menu.Key == ConsoleKey.C) feats.Copy(SELECTEDFEAT, CHARNAME, NEWOWNER);
+                    }
+                    else
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine("  No such character. ");
+                        Console.WriteLine("");
+                        Console.ResetColor();
+                        Console.ReadKey();
+                    }
+                }
+            }
+
+            // Notify user if item doesn't exist
+            else
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("");
+                Console.WriteLine("  No such feat. ");
+                Console.WriteLine("");
+                Console.ResetColor();
+                Console.ForegroundColor = ConsoleColor.Blue;
+                Console.WriteLine("  Press 'A' to add a feat");
+                Console.WriteLine("  Press any key to return");
+                Console.ResetColor();
+
+                var menu = Console.ReadKey();
+                if (menu.Key == ConsoleKey.A) CreateFeat(CHARNAME);
+            }
+
+            // Press any key to return
+            return;
+        }
+
+
+        /// <summary>
         /// Converts the text input into a float shows an error message if not suceeded
         /// </summary>
-        /// <returns></returns>
+        /// <returns>/floating value</returns>
         static float GetFloatFromConsole()
         {
             while (true)
@@ -513,7 +717,52 @@ namespace Little_Stat
             }
         }
 
+
+        /// <summary>
+        /// 
+        /// </summary>
+        static void Combat1v1()
+        {
+            // Header
+            Console.Clear();
+            Console.WriteLine("");
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("  Following characters available for combat");
+            Console.WriteLine("  -----------------------------------------");
+            Console.ResetColor();
+            Console.WriteLine("");
+            
+            // Get list of characters
+            var NamesList = character.List();
+            NamesList.ForEach(delegate(String name)
+                {   Console.WriteLine("    {0}", name);   }
+            );
+
+            // Let the user type in the character name to get info for
+            Console.WriteLine("");
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.Write("  Select first character: ");
+            string FIRSTCHAR = Console.ReadLine();
+            Console.Write("  Select second character: ");
+            string SECONDCHAR = Console.ReadLine();
+            Console.ResetColor();
+
+            // Print out info is character exists
+            if (character.Exists(FIRSTCHAR) && character.Exists(SECONDCHAR))
+            { 
+            
+            }
+
+            else
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("\n    Invalid selection. Press any key to return..\n");
+                Console.ResetColor();
+                var menu = Console.ReadKey();
+            }
+        }
         
+
         /*
          * No more methods here
          */
@@ -524,6 +773,7 @@ namespace Little_Stat
          */
         static Character character = new Character();
         static Inventory inventory = new Inventory();
+        static Feats feats = new Feats();
         static RollGenerator dice = new RollGenerator();
         
         float STRENGTH;
