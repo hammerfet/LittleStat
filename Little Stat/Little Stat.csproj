@@ -63,9 +63,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Character.cs" />
+    <Compile Include="Combat.cs" />
+    <Compile Include="Feats.cs" />
     <Compile Include="Inventory.cs" />
     <Compile Include="Program.cs" />
-    <Compile Include="ProgramHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RollGenerator.cs" />
   </ItemGroup>

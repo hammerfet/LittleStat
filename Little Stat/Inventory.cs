@@ -123,17 +123,15 @@ namespace Little_Stat
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="CHARNAME"></param>
         /// <param name="ITEMNAME"></param>
         /// <param name="STAT"></param>
         /// <param name="value"></param>
-        public void SetStat(string CHARNAME, string ITEMNAME, string STAT, float VALUE)
+        public void SetStat(string ITEMNAME, string STAT, float VALUE)
         {
-            string str = string.Format("UPDATE Inventory SET {0} = @value WHERE Name = @Name AND Owner = @Owner", STAT);
+            string str = string.Format("UPDATE Inventory SET {0} = @value WHERE Name = @Name", STAT);
             using (SQLiteCommand cmd = new SQLiteCommand(str, db))
             {
                 cmd.Parameters.Add(new SQLiteParameter("@Name", ITEMNAME));
-                cmd.Parameters.Add(new SQLiteParameter("@Owner", CHARNAME));
                 cmd.Parameters.Add(new SQLiteParameter("@value", VALUE));
 
                 db.Open();
@@ -144,17 +142,16 @@ namespace Little_Stat
 
 
         /// <summary>
-        /// 
+        /// Sets the description of an item. Doesn't
+        /// care about owners.
         /// </summary>
-        /// <param name="CHARNAME"></param>
         /// <param name="ITEMNAME"></param>
         /// <param name="DESC"></param>
-        public void SetDescription(string CHARNAME, string ITEMNAME, string DESC)
+        public void SetDescription(string ITEMNAME, string DESC)
         {
-            using (SQLiteCommand cmd = new SQLiteCommand("UPDATE Inventory SET Description = @desc WHERE Name = @Name AND Owner = @Owner", db))
+            using (SQLiteCommand cmd = new SQLiteCommand("UPDATE Inventory SET Description = @desc WHERE Name = @Name", db))
             {
                 cmd.Parameters.Add(new SQLiteParameter("@Name", ITEMNAME));
-                cmd.Parameters.Add(new SQLiteParameter("@Owner", CHARNAME));
                 cmd.Parameters.Add(new SQLiteParameter("@desc", DESC));
 
                 db.Open();
@@ -170,7 +167,7 @@ namespace Little_Stat
         /// <param name="CHARNAME">Name of character</param>
         /// <param name="ITEMNAME">Name of item</param>
         /// <param name="STAT">stat to return</param>
-        /// <returns></returns>
+        /// <returns>float value</returns>
         public float GetStat(string CHARNAME, string ITEMNAME, string STAT)
         {
             float result = 0;
@@ -258,8 +255,9 @@ namespace Little_Stat
         /// <summary>
         /// Transfers an item from one character to another
         /// </summary>
+        /// <param name="FEATNAME">Item to transfer</param>
         /// <param name="FROM">Character to transfer from</param>
-        /// <param name="TO">character to transfer to</param>
+        /// <param name="TO">Character to transfer to</param>
         public void Transfer(string ITEMNAME, string FROM, string TO)
         {
             using (SQLiteCommand cmd = new SQLiteCommand("UPDATE Inventory SET Owner = @TO WHERE Owner = @FROM AND Name = @ITEMNAME", db))
@@ -278,9 +276,10 @@ namespace Little_Stat
         /// <summary>
         /// Copies item from one character to another
         /// </summary>
-        /// <param name="FROM">Character to copy item from</param>
-        /// <param name="TO">Character to copy item to</param>
-        public void Copy(string SELECTEDITEM, string FROM, string TO)
+        /// <param name="ITEMNAME">item to copy</param>
+        /// <param name="FROM">Character to copy from</param>
+        /// <param name="TO">Character to copy to</param>
+        public void Copy(string ITEMNAME, string FROM, string TO)
         {
             
         }

@@ -13,13 +13,11 @@ namespace Little_Stat
         SQLiteConnection db = new SQLiteConnection(@"Data Source=..\..\LittleStat.s3db");
 
 
-        /*
-         * Checks if character exists in database
-         * 
-         * Args: Name of character to check
-         * 
-         * Returns: true or false
-         */
+        /// <summary>
+        /// Checks if character exists
+        /// </summary>
+        /// <param name="NAME">Name of check</param>
+        /// <returns>true or false</returns>
         public bool Exists(string NAME)
         {
             using (SQLiteCommand cmd = new SQLiteCommand("SELECT count(*) FROM MajorStats WHERE name = @name", db))
@@ -36,15 +34,10 @@ namespace Little_Stat
         }
 
 
-        /* 
-         * Creates character in database. Should
-         * only be called after checking if character
-         * already exists.
-         * 
-         * Args: NAME = name of character to create
-         * 
-         * Returns: Nothing
-         */
+        /// <summary>
+        /// Creates a new character
+        /// </summary>
+        /// <param name="NAME">Name of character to create</param>
         public void Create(string NAME)
         {
             using (SQLiteCommand cmd = new SQLiteCommand("INSERT INTO MajorStats (Name) VALUES (@name)", db))
@@ -68,11 +61,10 @@ namespace Little_Stat
         }
         
 
-        /*
-         * Gets a list of characters in database
-         * 
-         * Returns: array of character names
-         */
+        /// <summary>
+        /// Returns a list of character in database
+        /// </summary>
+        /// <returns>List of character names</returns>
         public List<string> List()
         {
             List<String> namesList = new List<string>();
@@ -93,16 +85,13 @@ namespace Little_Stat
         }
 
 
-        /*
-         * Sets a stat of the selected character
-         * 
-         * Args: NAME = character name to set stat of
-         *       STAT = the stat to set
-         *       value = the value to set the stat to
-         *       
-         * Returns: Nothing..
-         */
-        public void SetStat(string NAME, string STAT, float value)
+        /// <summary>
+        /// Sets a stat of a character
+        /// </summary>
+        /// <param name="NAME">Name of character</param>
+        /// <param name="STAT">Name of stat</param>
+        /// <param name="VALUE">Value of stat</param>
+        public void SetStat(string NAME, string STAT, float VALUE)
         {
             string str = "";
 
@@ -131,7 +120,7 @@ namespace Little_Stat
             using (SQLiteCommand cmd = new SQLiteCommand(str, db))
             {
                 cmd.Parameters.Add(new SQLiteParameter("@name", NAME));
-                cmd.Parameters.Add(new SQLiteParameter("@value", value));
+                cmd.Parameters.Add(new SQLiteParameter("@value", VALUE));
 
                 db.Open();
                 cmd.ExecuteNonQuery();
