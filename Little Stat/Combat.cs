@@ -12,5 +12,11 @@ namespace Little_Stat
         {
 
         }
+
+        public void MeleeFront(string FIRSTCHAR, string SECONDCHAR)
+        {
+            // attack = 
+
+        }
     }
 }

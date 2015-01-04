@@ -6,6 +6,65 @@ using System.Threading.Tasks;
 
 namespace Little_Stat
 {
+    public enum Stat
+    {
+        /* Primary stats for chars and items */
+        Strength,
+        Agility,
+        Constitution,
+        Intellect,
+        Perception,
+        Tenacity,
+        Charisma,
+        Instinct,
+        Communication,
+
+        /* Secondary stats  for chars only*/
+        Movement,
+        Fortitude,
+        Will,
+        Reaction,
+
+        /* Variables */
+        HP,
+        Mana,
+        Stamina,
+        EXP,
+
+        /* Item related */
+        Attack,
+        AoERadius,
+        HeadArmour,
+        BodyArmour,
+        BackArmour,
+        LegsArmour,        
+        
+        Description,
+        Quantity,
+        Weight,
+        LastsTurns,
+
+        /* Feat related */
+        ManaCost,
+        StaminaCost
+    };
+
+    public enum ItemSlot
+    {
+        Head,
+        Body,
+        Legs,
+        Sheild,
+        Trinket,
+        Ring1,
+        Ring2,
+
+        BothHands,
+        LeftHand,
+        RightHand,
+        OffHand
+    }
+
     class Program
     {
         /// <summary>
@@ -146,36 +205,31 @@ namespace Little_Stat
 
             // Finally write or overwite character stats
             Console.Write("    Enter STRENGTH value: ");
-            character.SetStat(name, "Strength", GetFloatFromConsole());
-
-            Console.Write("    Enter VIGOUR value: ");
-            character.SetStat(name, "Vigour", GetFloatFromConsole());
+            character.SetStat(name, Stat.Strength, GetFloatFromConsole());
 
             Console.Write("    Enter AGILITY value: ");
-            character.SetStat(name, "Agility", GetFloatFromConsole());
+            character.SetStat(name, Stat.Agility, GetFloatFromConsole());
+
+            Console.Write("    Enter CONSTITUTION value: ");
+            character.SetStat(name, Stat.Constitution, GetFloatFromConsole());
 
             Console.Write("    Enter INTELLECT value: ");
-            character.SetStat(name, "Intellect", GetFloatFromConsole());
+            character.SetStat(name, Stat.Intellect, GetFloatFromConsole());
 
             Console.Write("    Enter PERCEPTION value: ");
-            character.SetStat(name, "Perception", GetFloatFromConsole());
+            character.SetStat(name, Stat.Perception, GetFloatFromConsole());
 
             Console.Write("    Enter TENACITY value: ");
-            character.SetStat(name, "Tenacity", GetFloatFromConsole());
+            character.SetStat(name, Stat.Tenacity, GetFloatFromConsole());
 
             Console.Write("    Enter CHARISMA value: ");
-            character.SetStat(name, "CHARISMA", GetFloatFromConsole());
+            character.SetStat(name, Stat.Charisma, GetFloatFromConsole());
 
             Console.Write("    Enter INSTINCT value: ");
-            character.SetStat(name, "INSTINCT", GetFloatFromConsole());
+            character.SetStat(name, Stat.Instinct, GetFloatFromConsole());
 
             Console.Write("    Enter COMMUNICATION value: ");
-            character.SetStat(name, "COMMUNICATION", GetFloatFromConsole());
-
-            // Set Max HP, Mana and Stamina
-            character.SetStat(name, "CurrentHP", character.GetStat(name, "MaxHP"));
-            character.SetStat(name, "CurrentMana", character.GetStat(name, "MaxMana"));
-            character.SetStat(name, "CurrentStamina", character.GetStat(name, "MaxStamina"));
+            character.SetStat(name, Stat.Communication, GetFloatFromConsole());
         }
 
 
@@ -213,29 +267,29 @@ namespace Little_Stat
             if (character.Exists(characterName))
             {
                 Console.WriteLine("");
-                Console.Write("    HP = {0} / {1}", character.GetStat(characterName, "CurrentHP"), character.GetStat(characterName, "MaxHP"));
-                Console.Write("    Mana = {0} / {1}", character.GetStat(characterName, "CurrentMana"), character.GetStat(characterName, "MaxMana"));
-                Console.Write("    Stamina = {0} / {1}", character.GetStat(characterName, "CurrentStamina"), character.GetStat(characterName, "MaxStamina"));
+                Console.Write("    HP = {0}%", character.GetStat(characterName, Stat.HP));
+                Console.Write("    Mana = {0}%", character.GetStat(characterName, Stat.Mana));
+                Console.Write("    Stamina = {0}%", character.GetStat(characterName, Stat.Stamina));
                 Console.WriteLine("\n");
-                Console.Write("    Strength: {0}", character.GetStat(characterName, "Strength"));
-                Console.Write("    Vigour: {0}", character.GetStat(characterName, "Vigour"));
-                Console.Write("        Agility: {0}", character.GetStat(characterName, "Agility"));
+                Console.Write("    Strength: {0}", character.GetStat(characterName, Stat.Strength));
+                Console.Write("    Agility: {0}", character.GetStat(characterName, Stat.Agility));
+                Console.Write("       Constitution: {0}", character.GetStat(characterName, Stat.Constitution));
                 Console.WriteLine("");
-                Console.Write("    Intellect: {0}", character.GetStat(characterName, "Intellect"));
-                Console.Write("   Perception: {0}", character.GetStat(characterName, "Perception"));
-                Console.Write("    Tenacity: {0}", character.GetStat(characterName, "Tenacity"));
+                Console.Write("    Intellect: {0}", character.GetStat(characterName, Stat.Intellect));
+                Console.Write("   Perception: {0}", character.GetStat(characterName, Stat.Perception));
+                Console.Write("    Tenacity: {0}", character.GetStat(characterName, Stat.Tenacity));
                 Console.WriteLine("");
-                Console.Write("    Charisma: {0}", character.GetStat(characterName, "Charisma"));
-                Console.Write("    Instinct: {0}", character.GetStat(characterName, "Instinct"));
-                Console.Write("      Communication: {0}", character.GetStat(characterName, "Communication"));
+                Console.Write("    Charisma: {0}", character.GetStat(characterName, Stat.Charisma));
+                Console.Write("    Instinct: {0}", character.GetStat(characterName, Stat.Instinct));
+                Console.Write("      Communication: {0}", character.GetStat(characterName, Stat.Communication));
                 Console.WriteLine("\n");
-                Console.Write("    Movement: {0}", character.GetStat(characterName, "Movement"));
-                Console.Write("   Reaction: {0}", character.GetStat(characterName, "Reaction"));
+                Console.Write("    Movement: {0}", character.GetStat(characterName, Stat.Movement));
+                Console.Write("   Reaction: {0}", character.GetStat(characterName, Stat.Reaction));
                 Console.WriteLine("");
-                Console.Write("    Fortitude: {0}", character.GetStat(characterName, "Fortitude"));
-                Console.Write("  Will: {0}", character.GetStat(characterName, "Will"));
+                Console.Write("    Fortitude: {0}", character.GetStat(characterName, Stat.Fortitude));
+                Console.Write("  Will: {0}", character.GetStat(characterName, Stat.Will));
                 Console.WriteLine("\n");
-                Console.Write("    Experience: {0}", character.GetStat(characterName, "EXP"));
+                Console.Write("    Experience: {0}", character.GetStat(characterName, Stat.EXP));
                 Console.WriteLine("\n");
             }
             
@@ -323,55 +377,58 @@ namespace Little_Stat
             inventory.SetDescription(ITEMNAME, Console.ReadLine());
 
             Console.Write("    Enter item QUANTITY: ");
-            inventory.SetStat(ITEMNAME, "Quantity", GetFloatFromConsole());
+            inventory.SetStat(ITEMNAME, Stat.Quantity, GetFloatFromConsole());
 
             Console.Write("    Enter item WEIGHT: ");
-            inventory.SetStat(ITEMNAME, "Weight", GetFloatFromConsole());
+            inventory.SetStat(ITEMNAME, Stat.Weight, GetFloatFromConsole());
 
             Console.Write("    Enter STRENGTH modifier: ");
-            inventory.SetStat(ITEMNAME, "STRModifier", GetFloatFromConsole());
-
-            Console.Write("    Enter VIGOUR modifier: ");
-            inventory.SetStat(ITEMNAME, "VIGModifier", GetFloatFromConsole());
+            inventory.SetStat(ITEMNAME, Stat.Strength, GetFloatFromConsole());
 
             Console.Write("    Enter AGILITY modifier: ");
-            inventory.SetStat(ITEMNAME, "AGIModifier", GetFloatFromConsole());
+            inventory.SetStat(ITEMNAME, Stat.Agility, GetFloatFromConsole());
+
+            Console.Write("    Enter CONSTITUTION modifier: ");
+            inventory.SetStat(ITEMNAME, Stat.Constitution, GetFloatFromConsole());
 
             Console.Write("    Enter INTELLECT modifier: ");
-            inventory.SetStat(ITEMNAME, "INTModifier", GetFloatFromConsole());
+            inventory.SetStat(ITEMNAME, Stat.Intellect, GetFloatFromConsole());
 
             Console.Write("    Enter PERCEPTION modifier: ");
-            inventory.SetStat(ITEMNAME, "PERModifier", GetFloatFromConsole());
+            inventory.SetStat(ITEMNAME, Stat.Perception, GetFloatFromConsole());
 
             Console.Write("    Enter TENACITY modifier: ");
-            inventory.SetStat(ITEMNAME, "TENModifier", GetFloatFromConsole());
+            inventory.SetStat(ITEMNAME, Stat.Tenacity, GetFloatFromConsole());
 
             Console.Write("    Enter CHARISMA modifier: ");
-            inventory.SetStat(ITEMNAME, "CHAModifier", GetFloatFromConsole());
+            inventory.SetStat(ITEMNAME, Stat.Charisma, GetFloatFromConsole());
 
             Console.Write("    Enter INSTINCT modifier: ");
-            inventory.SetStat(ITEMNAME, "INSModifier", GetFloatFromConsole());
+            inventory.SetStat(ITEMNAME, Stat.Instinct, GetFloatFromConsole());
 
             Console.Write("    Enter COMMUNICATION modifier: ");
-            inventory.SetStat(ITEMNAME, "COMModifier", GetFloatFromConsole());
+            inventory.SetStat(ITEMNAME, Stat.Communication, GetFloatFromConsole());
 
-            Console.Write("    Enter WEAPON power: ");
-            inventory.SetStat(ITEMNAME, "WeaponValue", GetFloatFromConsole());
+            Console.Write("    Enter ATTACK power: ");
+            inventory.SetStat(ITEMNAME, Stat.Attack, GetFloatFromConsole());
 
-            Console.Write("    Enter ARMOR power: ");
-            inventory.SetStat(ITEMNAME, "ArmorValue", GetFloatFromConsole());
+            Console.Write("    Enter HEAD ARMOR value: ");
+            inventory.SetStat(ITEMNAME, Stat.HeadArmour, GetFloatFromConsole());
 
-            Console.Write("    Enter HP BOOST modifier: ");
-            inventory.SetStat(ITEMNAME, "HPBoost", GetFloatFromConsole());
+            Console.Write("    Enter BODY ARMOR value: ");
+            inventory.SetStat(ITEMNAME, Stat.BodyArmour, GetFloatFromConsole());
 
-            Console.Write("    Enter MANA BOOST modifier: ");
-            inventory.SetStat(ITEMNAME, "ManaBoost", GetFloatFromConsole());
+            Console.Write("    Enter BACK ARMOR value: ");
+            inventory.SetStat(ITEMNAME, Stat.BackArmour, GetFloatFromConsole());
 
-            Console.Write("    Enter STAMINA BOOST modifier: ");
-            inventory.SetStat(ITEMNAME, "StaminaBoost", GetFloatFromConsole());
+            Console.Write("    Enter LEG ARMOR value: ");
+            inventory.SetStat(ITEMNAME, Stat.LegsArmour, GetFloatFromConsole()); 
+            
+            Console.Write("    Enter AoE radius: ");
+            inventory.SetStat(ITEMNAME, Stat.LegsArmour, GetFloatFromConsole());
 
             Console.Write("    Enter how many TURNS the item lasts (0 for inf): ");
-            inventory.SetStat(ITEMNAME, "LastsTurns", GetFloatFromConsole());
+            inventory.SetStat(ITEMNAME, Stat.LastsTurns, GetFloatFromConsole());
 
         }
 
@@ -414,51 +471,51 @@ namespace Little_Stat
                 if (menu.Key != ConsoleKey.Enter) return;
             }
 
-            // Create character if doesn't exist
+            // Create feat if doesn't exist
             else feats.Create(CHARNAME, FEATNAME);
 
             // Finally write or overwite character stats
-            Console.Write("    Enter item description: ");
+            Console.Write("    Enter feat description: ");
             feats.SetDescription(FEATNAME, Console.ReadLine());
 
-            Console.Write("    Enter HP HIT modifier: ");
-            feats.SetStat(FEATNAME, "HealthHit", GetFloatFromConsole());
+            Console.Write("    Enter MANA COST: ");
+            feats.SetStat(FEATNAME, Stat.ManaCost, GetFloatFromConsole());
 
-            Console.Write("    Enter MANA HIT modifier: ");
-            feats.SetStat(FEATNAME, "ManaHit", GetFloatFromConsole());
-
-            Console.Write("    Enter STAMINA HIT modifier: ");
-            feats.SetStat(FEATNAME, "StaminaHit", GetFloatFromConsole());
+            Console.Write("    Enter STAMINA COST: ");
+            feats.SetStat(FEATNAME, Stat.StaminaCost, GetFloatFromConsole());
 
             Console.Write("    Enter STRENGTH modifier: ");
-            feats.SetStat(FEATNAME, "STRModifier", GetFloatFromConsole());
-
-            Console.Write("    Enter VIGOUR modifier: ");
-            feats.SetStat(FEATNAME, "VIGModifier", GetFloatFromConsole());
+            feats.SetStat(FEATNAME, Stat.Strength, GetFloatFromConsole());
 
             Console.Write("    Enter AGILITY modifier: ");
-            feats.SetStat(FEATNAME, "AGIModifier", GetFloatFromConsole());
+            feats.SetStat(FEATNAME, Stat.Agility, GetFloatFromConsole());
+
+            Console.Write("    Enter CONSTITUTION modifier: ");
+            feats.SetStat(FEATNAME, Stat.Constitution, GetFloatFromConsole());
 
             Console.Write("    Enter INTELLECT modifier: ");
-            feats.SetStat(FEATNAME, "INTModifier", GetFloatFromConsole());
+            feats.SetStat(FEATNAME, Stat.Intellect, GetFloatFromConsole());
 
             Console.Write("    Enter PERCEPTION modifier: ");
-            feats.SetStat(FEATNAME, "PERModifier", GetFloatFromConsole());
+            feats.SetStat(FEATNAME, Stat.Perception, GetFloatFromConsole());
 
             Console.Write("    Enter TENACITY modifier: ");
-            feats.SetStat(FEATNAME, "TENModifier", GetFloatFromConsole());
+            feats.SetStat(FEATNAME, Stat.Tenacity, GetFloatFromConsole());
 
             Console.Write("    Enter CHARISMA modifier: ");
-            feats.SetStat(FEATNAME, "CHAModifier", GetFloatFromConsole());
+            feats.SetStat(FEATNAME, Stat.Charisma, GetFloatFromConsole());
 
             Console.Write("    Enter INSTINCT modifier: ");
-            feats.SetStat(FEATNAME, "INSModifier", GetFloatFromConsole());
+            feats.SetStat(FEATNAME, Stat.Instinct, GetFloatFromConsole());
 
             Console.Write("    Enter COMMUNICATION modifier: ");
-            feats.SetStat(FEATNAME, "COMModifier", GetFloatFromConsole());
+            feats.SetStat(FEATNAME, Stat.Communication, GetFloatFromConsole());
 
-            Console.Write("    Enter how many TURNS the item lasts (1 for single hit): ");
-            feats.SetStat(FEATNAME, "LastsTurns", GetFloatFromConsole());
+            Console.Write("    Enter AoE radius: ");
+            feats.SetStat(FEATNAME, Stat.AoERadius, GetFloatFromConsole());
+
+            Console.Write("    Enter how many TURNS the item lasts (0 for inf): ");
+            feats.SetStat(FEATNAME, Stat.LastsTurns, GetFloatFromConsole());
 
         }
 
@@ -499,29 +556,30 @@ namespace Little_Stat
             if (inventory.Exists(CHARNAME, SELECTEDITEM))
             {
                 Console.WriteLine("");
-                Console.Write("    Quantity: {0}", inventory.GetStat(CHARNAME, SELECTEDITEM, "Quantity"));
-                Console.Write("    Weight: {0}", inventory.GetStat(CHARNAME, SELECTEDITEM, "Weight"));
+                Console.Write("    Quantity: {0}", inventory.GetStat(CHARNAME, SELECTEDITEM, Stat.Quantity));
+                Console.Write("    Weight: {0}", inventory.GetStat(CHARNAME, SELECTEDITEM, Stat.Weight));
                 Console.WriteLine("\n");
-                Console.Write("    STR modifier: {0}", inventory.GetStat(CHARNAME, SELECTEDITEM, "STRModifier"));
-                Console.Write("    VIG modifier: {0}", inventory.GetStat(CHARNAME, SELECTEDITEM, "VIGModifier"));
-                Console.Write("    AGI modifier: {0}", inventory.GetStat(CHARNAME, SELECTEDITEM, "AGIModifier"));
+                Console.Write("    STR modifier: {0}", inventory.GetStat(CHARNAME, SELECTEDITEM, Stat.Strength));
+                Console.Write("    AGI modifier: {0}", inventory.GetStat(CHARNAME, SELECTEDITEM, Stat.Agility));
+                Console.Write("    CON modifier: {0}", inventory.GetStat(CHARNAME, SELECTEDITEM, Stat.Constitution));
                 Console.WriteLine("");
-                Console.Write("    INT modifier: {0}", inventory.GetStat(CHARNAME, SELECTEDITEM, "INTModifier"));
-                Console.Write("    PER modifier: {0}", inventory.GetStat(CHARNAME, SELECTEDITEM, "PERModifier"));
-                Console.Write("    TEN modifier: {0}", inventory.GetStat(CHARNAME, SELECTEDITEM, "TENModifier"));
+                Console.Write("    INT modifier: {0}", inventory.GetStat(CHARNAME, SELECTEDITEM, Stat.Intellect));
+                Console.Write("    PER modifier: {0}", inventory.GetStat(CHARNAME, SELECTEDITEM, Stat.Perception));
+                Console.Write("    TEN modifier: {0}", inventory.GetStat(CHARNAME, SELECTEDITEM, Stat.Tenacity));
                 Console.WriteLine("");
-                Console.Write("    CHA modifier: {0}", inventory.GetStat(CHARNAME, SELECTEDITEM, "CHAModifier"));
-                Console.Write("    INS modifier: {0}", inventory.GetStat(CHARNAME, SELECTEDITEM, "INSModifier"));
-                Console.Write("    COM modifier: {0}", inventory.GetStat(CHARNAME, SELECTEDITEM, "COMModifier"));
+                Console.Write("    CHA modifier: {0}", inventory.GetStat(CHARNAME, SELECTEDITEM, Stat.Charisma));
+                Console.Write("    INS modifier: {0}", inventory.GetStat(CHARNAME, SELECTEDITEM, Stat.Instinct));
+                Console.Write("    COM modifier: {0}", inventory.GetStat(CHARNAME, SELECTEDITEM, Stat.Communication));
                 Console.WriteLine("\n");
-                Console.Write("    HP Boost: {0}", inventory.GetStat(CHARNAME, SELECTEDITEM, "HPBoost"));
-                Console.Write("    Mana Boost: {0}", inventory.GetStat(CHARNAME, SELECTEDITEM, "ManaBoost"));
-                Console.Write("    Stamina Boost: {0}", inventory.GetStat(CHARNAME, SELECTEDITEM, "StaminaBoost"));
+                Console.Write("    Head Armour: {0}", inventory.GetStat(CHARNAME, SELECTEDITEM, Stat.HeadArmour));
+                Console.Write("    Body Armour: {0}", inventory.GetStat(CHARNAME, SELECTEDITEM, Stat.BodyArmour));
+                Console.Write("    Back Armour: {0}", inventory.GetStat(CHARNAME, SELECTEDITEM, Stat.BackArmour));
+                Console.Write("    Legs Armour: {0}", inventory.GetStat(CHARNAME, SELECTEDITEM, Stat.LegsArmour));
                 Console.WriteLine("\n");
-                Console.Write("    Weapon Value: {0}",inventory.GetStat(CHARNAME, SELECTEDITEM, "WeaponValue"));
-                Console.Write("    Armor Value: {0}", inventory.GetStat(CHARNAME, SELECTEDITEM, "ArmorValue"));
+                Console.Write("    Attack Value: {0}", inventory.GetStat(CHARNAME, SELECTEDITEM, Stat.Attack));
+                Console.Write("    AoE Radius: {0}", inventory.GetStat(CHARNAME, SELECTEDITEM, Stat.AoERadius));
                 Console.WriteLine("\n");
-                Console.Write("    Item lasts for {0} turns", inventory.GetStat(CHARNAME, SELECTEDITEM, "LastsTurns"));
+                Console.Write("    Item lasts for {0} turns", inventory.GetStat(CHARNAME, SELECTEDITEM, Stat.LastsTurns));
                 Console.WriteLine("\n");
 
                 // Ask to add, transfer or copy item
@@ -619,23 +677,23 @@ namespace Little_Stat
             if (feats.Exists(CHARNAME, SELECTEDFEAT))
             {
                 Console.WriteLine("");
-                Console.Write("    Health Hit: {0}", feats.GetStat(CHARNAME, SELECTEDFEAT, "HealthHit"));
-                Console.Write("    Mana Hit: {0}", feats.GetStat(CHARNAME, SELECTEDFEAT, "ManaHit"));
-                Console.Write("    Stamina Hit: {0}", feats.GetStat(CHARNAME, SELECTEDFEAT, "StaminaHit"));
+                Console.Write("    Mana Cost: {0}", feats.GetStat(CHARNAME, SELECTEDFEAT, Stat.Quantity));
+                Console.Write("    Stamina Cost: {0}", feats.GetStat(CHARNAME, SELECTEDFEAT, Stat.Weight));
                 Console.WriteLine("\n");
-                Console.Write("    STR modifier: {0}", feats.GetStat(CHARNAME, SELECTEDFEAT, "STRModifier"));
-                Console.Write("    VIG modifier: {0}", feats.GetStat(CHARNAME, SELECTEDFEAT, "VIGModifier"));
-                Console.Write("    AGI modifier: {0}", feats.GetStat(CHARNAME, SELECTEDFEAT, "AGIModifier"));
-                Console.WriteLine("");
-                Console.Write("    INT modifier: {0}", feats.GetStat(CHARNAME, SELECTEDFEAT, "INTModifier"));
-                Console.Write("    PER modifier: {0}", feats.GetStat(CHARNAME, SELECTEDFEAT, "PERModifier"));
-                Console.Write("    TEN modifier: {0}", feats.GetStat(CHARNAME, SELECTEDFEAT, "TENModifier"));
-                Console.WriteLine("");
-                Console.Write("    CHA modifier: {0}", feats.GetStat(CHARNAME, SELECTEDFEAT, "CHAModifier"));
-                Console.Write("    INS modifier: {0}", feats.GetStat(CHARNAME, SELECTEDFEAT, "INSModifier"));
-                Console.Write("    COM modifier: {0}", feats.GetStat(CHARNAME, SELECTEDFEAT, "COMModifier"));
+                Console.Write("    STR modifier: {0}", feats.GetStat(CHARNAME, SELECTEDFEAT, Stat.Strength));
+                Console.Write("    AGI modifier: {0}", feats.GetStat(CHARNAME, SELECTEDFEAT, Stat.Agility));
+                Console.Write("    CON modifier: {0}", feats.GetStat(CHARNAME, SELECTEDFEAT, Stat.Constitution));
+                Console.WriteLine("");                 
+                Console.Write("    INT modifier: {0}", feats.GetStat(CHARNAME, SELECTEDFEAT, Stat.Intellect));
+                Console.Write("    PER modifier: {0}", feats.GetStat(CHARNAME, SELECTEDFEAT, Stat.Perception));
+                Console.Write("    TEN modifier: {0}", feats.GetStat(CHARNAME, SELECTEDFEAT, Stat.Tenacity));
+                Console.WriteLine("");                 
+                Console.Write("    CHA modifier: {0}", feats.GetStat(CHARNAME, SELECTEDFEAT, Stat.Charisma));
+                Console.Write("    INS modifier: {0}", feats.GetStat(CHARNAME, SELECTEDFEAT, Stat.Instinct));
+                Console.Write("    COM modifier: {0}", feats.GetStat(CHARNAME, SELECTEDFEAT, Stat.Communication));
                 Console.WriteLine("\n");
-                Console.Write("    Item lasts for {0} turns", feats.GetStat(CHARNAME, SELECTEDFEAT, "LastsTurns"));
+                Console.Write("    AoE Radius: {0}", feats.GetStat(CHARNAME, SELECTEDFEAT, Stat.AoERadius));
+                Console.Write("    Item lasts for {0} turns", feats.GetStat(CHARNAME, SELECTEDFEAT, Stat.LastsTurns));
                 Console.WriteLine("\n");
 
                 // Ask to add, transfer or copy item

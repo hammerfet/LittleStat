@@ -103,25 +103,25 @@ namespace Little_Stat
         /// <param name="NAME">Name of character</param>
         /// <param name="STAT">Name of stat</param>
         /// <param name="VALUE">Value of stat</param>
-        public void SetStat(string FEAT, string STAT, float VALUE)
+        public void SetStat(string FEAT, Stat STAT, float VALUE)
         {
             string str = "";
 
             switch (STAT)
             {
-                case "HealthHit":
-                case "ManaHit":
-                case "StaminaHit":
-                case "STRModifier":
-                case "VIGModifier":
-                case "AGIModifier":
-                case "INTModifier":
-                case "PERModifier":
-                case "TENModifier":
-                case "CHAModifier":
-                case "INSModifier":
-                case "COMModifier":
-                case "LastsTurns":
+                case Stat.Strength:
+                case Stat.Agility:
+                case Stat.Constitution:
+                case Stat.Intellect:
+                case Stat.Perception:
+                case Stat.Tenacity:
+                case Stat.Charisma:
+                case Stat.Instinct:
+                case Stat.Communication:
+                case Stat.AoERadius:
+                case Stat.ManaCost:
+                case Stat.StaminaCost:
+                case Stat.LastsTurns:
                     str = string.Format("UPDATE Feats SET {0} = @value WHERE FeatName = @FeatName", STAT);
                     break;
 
@@ -168,26 +168,26 @@ namespace Little_Stat
         /// <param name="FEATNAME">Name of feat</param>
         /// <param name="STAT">stat to return</param>
         /// <returns>float value</returns>
-        public float GetStat(string CHARNAME, string FEATNAME, string STAT)
+        public float GetStat(string CHARNAME, string FEATNAME, Stat STAT)
         {
             float result = 0;
             string str = "";
 
             switch (STAT)
             {
-                case "HealthHit":
-                case "ManaHit":
-                case "StaminaHit":
-                case "STRModifier":
-                case "VIGModifier":
-                case "AGIModifier":
-                case "INTModifier":
-                case "PERModifier":
-                case "TENModifier":
-                case "CHAModifier":
-                case "INSModifier":
-                case "COMModifier":
-                case "LastsTurns":
+                case Stat.Strength:
+                case Stat.Agility:
+                case Stat.Constitution:
+                case Stat.Intellect:
+                case Stat.Perception:
+                case Stat.Tenacity:
+                case Stat.Charisma:
+                case Stat.Instinct:
+                case Stat.Communication:
+                case Stat.AoERadius:
+                case Stat.ManaCost:
+                case Stat.StaminaCost:
+                case Stat.LastsTurns:
                     str = string.Format("SELECT {0} FROM Feats WHERE FeatName = '{1}' AND Character = '{2}'", STAT, FEATNAME, CHARNAME);
                     break;
 

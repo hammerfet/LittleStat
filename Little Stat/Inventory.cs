@@ -11,7 +11,6 @@ namespace Little_Stat
     {
         SQLiteConnection db = new SQLiteConnection(@"Data Source=..\..\LittleStat.s3db");
 
-
         /// <summary>
         /// Adds item to the database or increments
         /// quantity of existing same item
@@ -126,9 +125,37 @@ namespace Little_Stat
         /// <param name="ITEMNAME"></param>
         /// <param name="STAT"></param>
         /// <param name="value"></param>
-        public void SetStat(string ITEMNAME, string STAT, float VALUE)
+        public void SetStat(string ITEMNAME, Stat STAT, float VALUE)
         {
-            string str = string.Format("UPDATE Inventory SET {0} = @value WHERE Name = @Name", STAT);
+            string str = "";
+
+            switch (STAT)
+            {
+                case Stat.Strength:
+                case Stat.Agility:
+                case Stat.Constitution:
+                case Stat.Intellect:
+                case Stat.Perception:
+                case Stat.Tenacity:
+                case Stat.Charisma:
+                case Stat.Instinct:
+                case Stat.Communication:
+                case Stat.Attack:
+                case Stat.AoERadius:
+                case Stat.HeadArmour:
+                case Stat.BodyArmour:
+                case Stat.BackArmour:
+                case Stat.LegsArmour:
+                case Stat.Quantity:
+                case Stat.Weight:
+                case Stat.LastsTurns:
+                    str = string.Format("UPDATE Inventory SET {0} = @value WHERE Name = @Name", STAT);
+                    break;
+
+                default:
+                    return;
+            }
+
             using (SQLiteCommand cmd = new SQLiteCommand(str, db))
             {
                 cmd.Parameters.Add(new SQLiteParameter("@Name", ITEMNAME));
@@ -168,30 +195,31 @@ namespace Little_Stat
         /// <param name="ITEMNAME">Name of item</param>
         /// <param name="STAT">stat to return</param>
         /// <returns>float value</returns>
-        public float GetStat(string CHARNAME, string ITEMNAME, string STAT)
+        public float GetStat(string CHARNAME, string ITEMNAME, Stat STAT)
         {
             float result = 0;
             string str = "";
 
             switch (STAT)
             {
-                case "Quantity":
-                case "Weight":
-                case "STRModifier":
-                case "VIGModifier":
-                case "AGIModifier":
-                case "INTModifier":
-                case "PERModifier":
-                case "TENModifier":
-                case "CHAModifier":
-                case "INSModifier":
-                case "COMModifier":
-                case "WeaponValue":
-                case "ArmorValue":
-                case "HPBoost":
-                case "ManaBoost":
-                case "StaminaBoost":
-                case "LastsTurns":
+                case Stat.Strength:
+                case Stat.Agility:
+                case Stat.Constitution:
+                case Stat.Intellect:
+                case Stat.Perception:
+                case Stat.Tenacity:
+                case Stat.Charisma:
+                case Stat.Instinct:
+                case Stat.Communication:
+                case Stat.Attack:
+                case Stat.AoERadius:
+                case Stat.HeadArmour:
+                case Stat.BodyArmour:
+                case Stat.BackArmour:
+                case Stat.LegsArmour:
+                case Stat.Quantity:
+                case Stat.Weight:
+                case Stat.LastsTurns:
                     str = string.Format("SELECT {0} FROM Inventory WHERE Name = '{1}' AND Owner = '{2}'", STAT, ITEMNAME, CHARNAME);
                     break;
 

@@ -20,7 +20,7 @@ namespace Little_Stat
         /// <returns>true or false</returns>
         public bool Exists(string NAME)
         {
-            using (SQLiteCommand cmd = new SQLiteCommand("SELECT count(*) FROM MajorStats WHERE name = @name", db))
+            using (SQLiteCommand cmd = new SQLiteCommand("SELECT count(*) FROM Characters WHERE name = @name", db))
             {
                 cmd.Parameters.Add(new SQLiteParameter("@name", NAME));
 
@@ -40,7 +40,7 @@ namespace Little_Stat
         /// <param name="NAME">Name of character to create</param>
         public void Create(string NAME)
         {
-            using (SQLiteCommand cmd = new SQLiteCommand("INSERT INTO MajorStats (Name) VALUES (@name)", db))
+            using (SQLiteCommand cmd = new SQLiteCommand("INSERT INTO Characters (Name) VALUES (@name)", db))
             {
                 cmd.Parameters.Add(new SQLiteParameter("@name", NAME));
                 db.Open();
@@ -51,7 +51,7 @@ namespace Little_Stat
 
         public void Delete(string NAME)
         {
-            using (SQLiteCommand cmd = new SQLiteCommand("DELETE FROM MajorStats WHERE Name = @Name", db))
+            using (SQLiteCommand cmd = new SQLiteCommand("DELETE FROM Characters WHERE Name = @Name", db))
             {
                 cmd.Parameters.Add(new SQLiteParameter("@name", NAME));
                 db.Open();
@@ -69,7 +69,7 @@ namespace Little_Stat
         {
             List<String> namesList = new List<string>();
            
-            using (SQLiteCommand cmd = new SQLiteCommand("SELECT Name FROM MajorStats", db))
+            using (SQLiteCommand cmd = new SQLiteCommand("SELECT Name FROM Characters", db))
             {
                 db.Open();
                 SQLiteDataReader reader = cmd.ExecuteReader();
@@ -91,26 +91,26 @@ namespace Little_Stat
         /// <param name="NAME">Name of character</param>
         /// <param name="STAT">Name of stat</param>
         /// <param name="VALUE">Value of stat</param>
-        public void SetStat(string NAME, string STAT, float VALUE)
+        public void SetStat(string NAME, Stat STAT, float VALUE)
         {
             string str = "";
 
             switch (STAT)
             {
-                case "Strength": // All these stats are base stats, the can be called directly from the db
-                case "Vigour":
-                case "Agility":
-                case "Intellect":
-                case "Perception":
-                case "Tenacity":
-                case "Charisma":
-                case "Instinct":
-                case "Communication":
-                case "CurrentHP":
-                case "CurrentMana":
-                case "CurrentStamina":
-                case "EXP":
-                    str = string.Format("UPDATE MajorStats SET {0} = @value WHERE Name = @name", STAT);
+                case Stat.Strength:
+                case Stat.Agility:
+                case Stat.Constitution:
+                case Stat.Intellect:
+                case Stat.Perception:
+                case Stat.Tenacity:
+                case Stat.Charisma:
+                case Stat.Instinct:
+                case Stat.Communication:
+                case Stat.HP:
+                case Stat.Mana:
+                case Stat.Stamina:
+                case Stat.EXP:
+                    str = string.Format("UPDATE Characters SET {0} = @value WHERE Name = @name", STAT);
                     break;
 
                 default:
@@ -137,54 +137,27 @@ namespace Little_Stat
         /// <param name="NAME">The name of the character</param>
         /// <param name="STAT">Stat required</param>
         /// <returns>Raw float value of the stat</returns>
-        public float GetStat(string NAME, string STAT)
+        public float GetStat(string NAME, Stat STAT)
         {
             float result = 0;
             string str = "";
 
             switch (STAT)
             {
-                case "Strength": // All these stats are base stats, the can be called directly from the db
-                case "Vigour":
-                case "Agility":
-                case "Intellect":
-                case "Perception":
-                case "Tenacity":
-                case "Charisma":
-                case "Instinct":
-                case "Communication":
-                case "CurrentHP":
-                case "CurrentMana":
-                case "CurrentStamina":
-                case "EXP":
-                    str = string.Format("SELECT {0} FROM MajorStats WHERE Name = '{1}'", STAT, NAME);
-                    break;
-
-                /*
-                 * Max hit points calculation
-                 * 
-                 * Mased mainly on phisical stats
-                 */
-                case "MaxHP":
-                    str = string.Format("SELECT ((Strength + Vigour + Agility) * 3) + ((Intellect + Perception + Tenacity) * 2) + (Charisma + Instinct + Communication) FROM MajorStats WHERE Name = '{0}'", NAME);
-                    break;
-
-                /*
-                 * Max mana calculation
-                 * 
-                 * Base mainly on Mental stats
-                 */ 
-                case "MaxMana":
-                    str = string.Format("SELECT Vigour + Intellect + Tenacity FROM MajorStats WHERE Name = '{0}'", NAME);
-                    break;
-
-                /*
-                 * Max stamina calculation
-                 * 
-                 * Base on phisical stats
-                 */ 
-                case "MaxStamina":
-                    str = string.Format("SELECT Strength + Agility + Vigour FROM MajorStats WHERE Name = '{0}'", NAME);
+                case Stat.Strength:
+                case Stat.Agility:
+                case Stat.Constitution:
+                case Stat.Intellect:
+                case Stat.Perception:
+                case Stat.Tenacity:
+                case Stat.Charisma:
+                case Stat.Instinct:
+                case Stat.Communication:
+                case Stat.HP:
+                case Stat.Mana:
+                case Stat.Stamina:
+                case Stat.EXP:
+                    str = string.Format("SELECT {0} FROM Characters WHERE Name = '{1}'", STAT, NAME);
                     break;
 
                 /*
@@ -192,8 +165,8 @@ namespace Little_Stat
                  * 
                  * Movement = AGI + VIG
                  */
-                case "Movement":
-                    str = string.Format("SELECT Agility + Vigour + Instinct FROM MajorStats WHERE Name = '{0}'", NAME);
+                case Stat.Movement:
+                    str = string.Format("SELECT Agility + Agility + Tenacity FROM Characters WHERE Name = '{0}'", NAME);
                     break;
 
                 /*
@@ -201,9 +174,8 @@ namespace Little_Stat
                  * 
                  * Fortitude = AGI + VIG + INS
                  */
-                case "PhysicalDefence":
-                case "Fortitude":
-                    str = string.Format("SELECT Agility + Vigour + Instinct FROM MajorStats WHERE Name = '{0}'", NAME);
+                case Stat.Fortitude:
+                    str = string.Format("SELECT Strength + Agility + Instinct FROM Characters WHERE Name = '{0}'", NAME);
                     break;
 
                 /*
@@ -211,9 +183,8 @@ namespace Little_Stat
                  * 
                  * Will = TEN + INT + INS
                  */
-                case "MentalDefence":
-                case "Will":
-                    str = string.Format("SELECT Tenacity + Intellect + Instinct FROM MajorStats WHERE Name = '{0}'", NAME);
+                case Stat.Will:
+                    str = string.Format("SELECT Tenacity + Intellect + Instinct FROM Characters WHERE Name = '{0}'", NAME);
                     break;
 
                 /*
@@ -221,17 +192,8 @@ namespace Little_Stat
                  * 
                  * Reaction = INT + PER + INS
                  */
-                case "Reaction":
-                    str = string.Format("SELECT Intellect + Perception + Instinct FROM MajorStats WHERE Name = '{0}'", NAME);
-                    break;
-
-                /*
-                 * Encumbrance calculation
-                 * 
-                 * Encumbrance = STR + STR + VIG
-                 */
-                case "MaxEncumberance":
-                    str = string.Format("SELECT Strength + Strength + Vigour FROM MajorStats WHERE Name = '{0}'", NAME);
+                case Stat.Reaction:
+                    str = string.Format("SELECT Intellect + Perception + Instinct FROM Characters WHERE Name = '{0}'", NAME);
                     break;
 
                 default:
