@@ -33,16 +33,20 @@ namespace Little_Stat
 
         /* Item related */
         Attack,
-        AoERadius,
-        HeadArmour,
-        BodyArmour,
-        BackArmour,
-        LegsArmour,        
+        Defence,
+        Type,
+        AoERadius,      
         
         Description,
         Quantity,
         Weight,
         LastsTurns,
+
+        /* Item types */
+        Heavy,
+        Light,
+        Ranged,
+        Magic,
 
         /* Feat related */
         ManaCost,
@@ -63,6 +67,21 @@ namespace Little_Stat
         LeftHand,
         RightHand,
         OffHand
+    }
+
+    public enum Conflict
+    {
+        HeavyAttack,
+        QuickAttack,
+        RangedAttack,
+        StealthAttack,
+
+        FromFront,
+        FromSide,
+        FromBehind,
+        FromAbove,
+        FromBelow,
+        FromFar
     }
 
     class Program
@@ -92,7 +111,7 @@ namespace Little_Stat
                 Console.WriteLine("    4 - ");
                 Console.WriteLine("    5 - ");
                 Console.WriteLine("    6 - ");
-                Console.WriteLine("    7 - Test D% Roll");
+                Console.WriteLine("    7 - ");
                 Console.WriteLine("    8 - Test normally distributed roll");
                 Console.WriteLine("    9 - Start Combat");
                 Console.WriteLine("");
@@ -135,15 +154,14 @@ namespace Little_Stat
 
                     case ConsoleKey.D7:
                     case ConsoleKey.NumPad7:
-                        Console.Clear();
-                        Console.WriteLine("\n\n    Result: {0}", dice.RollPercentile());
+                        counter.NextTurn("Adi");
                         Console.ReadKey();
                         break;
 
                     case ConsoleKey.D8:
                     case ConsoleKey.NumPad8:
                         Console.Clear();
-                        Console.WriteLine("\n\n    Result: {0}", dice.RollNormal());
+                        Console.WriteLine("\n\n    Result: {0}", dice.Roll(100));
                         Console.ReadKey();
                         break;
 
@@ -271,7 +289,7 @@ namespace Little_Stat
                 Console.Write("    Mana = {0}%", character.GetStat(characterName, Stat.Mana));
                 Console.Write("    Stamina = {0}%", character.GetStat(characterName, Stat.Stamina));
                 Console.WriteLine("\n");
-                Console.Write("    Strength: {0}", character.GetStat(characterName, Stat.Strength));
+                Console.Write("    Strength: {0} ({1})", character.GetStat(characterName, Stat.Strength), inventory.GetTotal(characterName, Stat.Strength));
                 Console.Write("    Agility: {0}", character.GetStat(characterName, Stat.Agility));
                 Console.Write("       Constitution: {0}", character.GetStat(characterName, Stat.Constitution));
                 Console.WriteLine("");
@@ -374,61 +392,52 @@ namespace Little_Stat
 
             // Finally write or overwite character stats
             Console.Write("    Enter item description: ");
-            inventory.SetDescription(ITEMNAME, Console.ReadLine());
+            inventory.SetDescription(CHARNAME, ITEMNAME, Console.ReadLine());
 
             Console.Write("    Enter item QUANTITY: ");
-            inventory.SetStat(ITEMNAME, Stat.Quantity, GetFloatFromConsole());
+            inventory.SetStat(CHARNAME, ITEMNAME, Stat.Quantity, GetFloatFromConsole());
 
             Console.Write("    Enter item WEIGHT: ");
-            inventory.SetStat(ITEMNAME, Stat.Weight, GetFloatFromConsole());
+            inventory.SetStat(CHARNAME, ITEMNAME, Stat.Weight, GetFloatFromConsole());
 
             Console.Write("    Enter STRENGTH modifier: ");
-            inventory.SetStat(ITEMNAME, Stat.Strength, GetFloatFromConsole());
+            inventory.SetStat(CHARNAME, ITEMNAME, Stat.Strength, GetFloatFromConsole());
 
             Console.Write("    Enter AGILITY modifier: ");
-            inventory.SetStat(ITEMNAME, Stat.Agility, GetFloatFromConsole());
+            inventory.SetStat(CHARNAME, ITEMNAME, Stat.Agility, GetFloatFromConsole());
 
             Console.Write("    Enter CONSTITUTION modifier: ");
-            inventory.SetStat(ITEMNAME, Stat.Constitution, GetFloatFromConsole());
+            inventory.SetStat(CHARNAME, ITEMNAME, Stat.Constitution, GetFloatFromConsole());
 
             Console.Write("    Enter INTELLECT modifier: ");
-            inventory.SetStat(ITEMNAME, Stat.Intellect, GetFloatFromConsole());
+            inventory.SetStat(CHARNAME, ITEMNAME, Stat.Intellect, GetFloatFromConsole());
 
             Console.Write("    Enter PERCEPTION modifier: ");
-            inventory.SetStat(ITEMNAME, Stat.Perception, GetFloatFromConsole());
+            inventory.SetStat(CHARNAME, ITEMNAME, Stat.Perception, GetFloatFromConsole());
 
             Console.Write("    Enter TENACITY modifier: ");
-            inventory.SetStat(ITEMNAME, Stat.Tenacity, GetFloatFromConsole());
+            inventory.SetStat(CHARNAME, ITEMNAME, Stat.Tenacity, GetFloatFromConsole());
 
             Console.Write("    Enter CHARISMA modifier: ");
-            inventory.SetStat(ITEMNAME, Stat.Charisma, GetFloatFromConsole());
+            inventory.SetStat(CHARNAME, ITEMNAME, Stat.Charisma, GetFloatFromConsole());
 
             Console.Write("    Enter INSTINCT modifier: ");
-            inventory.SetStat(ITEMNAME, Stat.Instinct, GetFloatFromConsole());
+            inventory.SetStat(CHARNAME, ITEMNAME, Stat.Instinct, GetFloatFromConsole());
 
             Console.Write("    Enter COMMUNICATION modifier: ");
-            inventory.SetStat(ITEMNAME, Stat.Communication, GetFloatFromConsole());
+            inventory.SetStat(CHARNAME, ITEMNAME, Stat.Communication, GetFloatFromConsole());
+
+            Console.Write("    Enter item TYPE: ");
+            inventory.SetType(CHARNAME, ITEMNAME, Console.ReadLine());
 
             Console.Write("    Enter ATTACK power: ");
-            inventory.SetStat(ITEMNAME, Stat.Attack, GetFloatFromConsole());
+            inventory.SetStat(CHARNAME, ITEMNAME, Stat.Attack, GetFloatFromConsole());
 
-            Console.Write("    Enter HEAD ARMOR value: ");
-            inventory.SetStat(ITEMNAME, Stat.HeadArmour, GetFloatFromConsole());
-
-            Console.Write("    Enter BODY ARMOR value: ");
-            inventory.SetStat(ITEMNAME, Stat.BodyArmour, GetFloatFromConsole());
-
-            Console.Write("    Enter BACK ARMOR value: ");
-            inventory.SetStat(ITEMNAME, Stat.BackArmour, GetFloatFromConsole());
-
-            Console.Write("    Enter LEG ARMOR value: ");
-            inventory.SetStat(ITEMNAME, Stat.LegsArmour, GetFloatFromConsole()); 
-            
-            Console.Write("    Enter AoE radius: ");
-            inventory.SetStat(ITEMNAME, Stat.LegsArmour, GetFloatFromConsole());
+            Console.Write("    Enter Defence value: ");
+            inventory.SetStat(CHARNAME, ITEMNAME, Stat.Defence, GetFloatFromConsole());
 
             Console.Write("    Enter how many TURNS the item lasts (0 for inf): ");
-            inventory.SetStat(ITEMNAME, Stat.LastsTurns, GetFloatFromConsole());
+            inventory.SetStat(CHARNAME, ITEMNAME, Stat.LastsTurns, GetFloatFromConsole());
 
         }
 
@@ -571,12 +580,10 @@ namespace Little_Stat
                 Console.Write("    INS modifier: {0}", inventory.GetStat(CHARNAME, SELECTEDITEM, Stat.Instinct));
                 Console.Write("    COM modifier: {0}", inventory.GetStat(CHARNAME, SELECTEDITEM, Stat.Communication));
                 Console.WriteLine("\n");
-                Console.Write("    Head Armour: {0}", inventory.GetStat(CHARNAME, SELECTEDITEM, Stat.HeadArmour));
-                Console.Write("    Body Armour: {0}", inventory.GetStat(CHARNAME, SELECTEDITEM, Stat.BodyArmour));
-                Console.Write("    Back Armour: {0}", inventory.GetStat(CHARNAME, SELECTEDITEM, Stat.BackArmour));
-                Console.Write("    Legs Armour: {0}", inventory.GetStat(CHARNAME, SELECTEDITEM, Stat.LegsArmour));
+                Console.Write("    Item Type: {0}", inventory.GetType(CHARNAME, SELECTEDITEM));
+                Console.Write("    Attack power: {0}", inventory.GetStat(CHARNAME, SELECTEDITEM, Stat.Attack));
+                Console.Write("    Defence value: {0}", inventory.GetStat(CHARNAME, SELECTEDITEM, Stat.Defence));
                 Console.WriteLine("\n");
-                Console.Write("    Attack Value: {0}", inventory.GetStat(CHARNAME, SELECTEDITEM, Stat.Attack));
                 Console.Write("    AoE Radius: {0}", inventory.GetStat(CHARNAME, SELECTEDITEM, Stat.AoERadius));
                 Console.WriteLine("\n");
                 Console.Write("    Item lasts for {0} turns", inventory.GetStat(CHARNAME, SELECTEDITEM, Stat.LastsTurns));
@@ -806,9 +813,16 @@ namespace Little_Stat
             Console.ResetColor();
 
             // Print out info is character exists
-            if (character.Exists(FIRSTCHAR) && character.Exists(SECONDCHAR))
-            { 
-            
+            if(combat.CanFight(FIRSTCHAR, SECONDCHAR))
+            {
+                float AoE = 0;
+                float att = combat.UseWeapon(FIRSTCHAR, out AoE);
+                float def = combat.DefenceTest(FIRSTCHAR, Conflict.FromFront);
+
+                float res = combat.Test(att, def);
+                Console.WriteLine(res);
+                Console.ReadKey();
+
             }
 
             else
@@ -833,6 +847,8 @@ namespace Little_Stat
         static Inventory inventory = new Inventory();
         static Feats feats = new Feats();
         static RollGenerator dice = new RollGenerator();
+        static Combat combat = new Combat();
+        static Counter counter = new Counter();
         
         float STRENGTH;
         float VIGOUR;

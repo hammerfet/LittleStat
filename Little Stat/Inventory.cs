@@ -20,18 +20,18 @@ namespace Little_Stat
         public void Create(string CHARNAME, string ITEMNAME)
         {
             
-            using (SQLiteCommand cmd = new SQLiteCommand("SELECT Quantity FROM Inventory WHERE Owner = @Owner AND Name = @Name", db))
+            using (SQLiteCommand cmd = new SQLiteCommand("SELECT Quantity FROM Inventory WHERE Owner = @char AND Name = @item", db))
             {
-                cmd.Parameters.Add(new SQLiteParameter("@Owner", CHARNAME));
-                cmd.Parameters.Add(new SQLiteParameter("@Name", ITEMNAME));
+                cmd.Parameters.Add(new SQLiteParameter("@char", CHARNAME));
+                cmd.Parameters.Add(new SQLiteParameter("@item", ITEMNAME));
 
                 db.Open();
                 int quantity = Convert.ToInt32(cmd.ExecuteScalar());
                 db.Close();
                 cmd.Parameters.Add(new SQLiteParameter("@NewQuantity", quantity + 1));
 
-                if(quantity > 0)    cmd.CommandText = "UPDATE Inventory SET Quantity = @NewQuantity WHERE Owner = @Owner AND Name = @Name";
-                else                cmd.CommandText = "INSERT INTO Inventory (Name, Owner) VALUES (@Name, @Owner)";
+                if(quantity > 0)    cmd.CommandText = "UPDATE Inventory SET Quantity = @NewQuantity WHERE Owner = @char AND Name = @item";
+                else                cmd.CommandText = "INSERT INTO Inventory (Name, Owner) VALUES (@item, @char)";
 
                 db.Open();
                 cmd.ExecuteNonQuery();
@@ -50,18 +50,18 @@ namespace Little_Stat
         public void Delete(string CHARNAME, string ITEMNAME)
         {
 
-            using (SQLiteCommand cmd = new SQLiteCommand("SELECT Quantity FROM Inventory WHERE Owner = @Owner AND Name = @Name", db))
+            using (SQLiteCommand cmd = new SQLiteCommand("SELECT Quantity FROM Inventory WHERE Owner = @char AND Name = @item", db))
             {
-                cmd.Parameters.Add(new SQLiteParameter("@Owner", CHARNAME));
-                cmd.Parameters.Add(new SQLiteParameter("@Name", ITEMNAME));
+                cmd.Parameters.Add(new SQLiteParameter("@char", CHARNAME));
+                cmd.Parameters.Add(new SQLiteParameter("@item", ITEMNAME));
 
                 db.Open();
                 int quantity = Convert.ToInt32(cmd.ExecuteScalar());
                 db.Close();
-                cmd.Parameters.Add(new SQLiteParameter("@NewQuantity", quantity - 1));
+                cmd.Parameters.Add(new SQLiteParameter("@newQuantity", quantity - 1));
 
-                if (quantity > 1)   cmd.CommandText = "UPDATE Inventory SET Quantity = @NewQuantity WHERE Owner = @Owner AND Name = @Name";
-                else                cmd.CommandText = "DELETE FROM Inventory WHERE Owner = @Owner AND Name = @Name";
+                if (quantity > 1)   cmd.CommandText = "UPDATE Inventory SET Quantity = @newQuantity WHERE Owner = @char AND Name = @item";
+                else                cmd.CommandText = "DELETE FROM Inventory WHERE Owner = @char AND Name = @item";
 
                 db.Open();
                 cmd.ExecuteNonQuery();
@@ -79,10 +79,10 @@ namespace Little_Stat
         /// <returns></returns>
         public bool Exists(string CHARNAME, string ITEMNAME)
         {
-            using (SQLiteCommand cmd = new SQLiteCommand("SELECT Quantity FROM Inventory WHERE Owner = @Owner AND Name = @Name", db))
+            using (SQLiteCommand cmd = new SQLiteCommand("SELECT Quantity FROM Inventory WHERE Owner = @char AND Name = @item", db))
             {
-                cmd.Parameters.Add(new SQLiteParameter("@Owner", CHARNAME));
-                cmd.Parameters.Add(new SQLiteParameter("@Name", ITEMNAME));
+                cmd.Parameters.Add(new SQLiteParameter("@char", CHARNAME));
+                cmd.Parameters.Add(new SQLiteParameter("@item", ITEMNAME));
 
                 db.Open();
                 int quantity = Convert.ToInt32(cmd.ExecuteScalar());
@@ -101,10 +101,10 @@ namespace Little_Stat
         public List<string> List(string CHARNAME)
         {
             List<String> itemNameList = new List<string>();
-
-            using (SQLiteCommand cmd = new SQLiteCommand("SELECT Name FROM Inventory where Owner = @Owner", db))
+          
+            using (SQLiteCommand cmd = new SQLiteCommand("SELECT Name FROM Inventory where Owner = @char", db))
             {
-                cmd.Parameters.Add(new SQLiteParameter("@Owner", CHARNAME));
+                cmd.Parameters.Add(new SQLiteParameter("@char", CHARNAME));
                 db.Open();
                 SQLiteDataReader reader = cmd.ExecuteReader();
                 int i = 0;
@@ -125,7 +125,7 @@ namespace Little_Stat
         /// <param name="ITEMNAME"></param>
         /// <param name="STAT"></param>
         /// <param name="value"></param>
-        public void SetStat(string ITEMNAME, Stat STAT, float VALUE)
+        public void SetStat(string CHARNAME, string ITEMNAME, Stat STAT, float VALUE)
         {
             string str = "";
 
@@ -141,15 +141,12 @@ namespace Little_Stat
                 case Stat.Instinct:
                 case Stat.Communication:
                 case Stat.Attack:
+                case Stat.Defence:
                 case Stat.AoERadius:
-                case Stat.HeadArmour:
-                case Stat.BodyArmour:
-                case Stat.BackArmour:
-                case Stat.LegsArmour:
                 case Stat.Quantity:
                 case Stat.Weight:
                 case Stat.LastsTurns:
-                    str = string.Format("UPDATE Inventory SET {0} = @value WHERE Name = @Name", STAT);
+                    str = string.Format("UPDATE Inventory SET {0} = @value WHERE Name = @item AND Owner = @char", STAT);
                     break;
 
                 default:
@@ -158,7 +155,8 @@ namespace Little_Stat
 
             using (SQLiteCommand cmd = new SQLiteCommand(str, db))
             {
-                cmd.Parameters.Add(new SQLiteParameter("@Name", ITEMNAME));
+                cmd.Parameters.Add(new SQLiteParameter("@char", CHARNAME));
+                cmd.Parameters.Add(new SQLiteParameter("@item", ITEMNAME));
                 cmd.Parameters.Add(new SQLiteParameter("@value", VALUE));
 
                 db.Open();
@@ -174,11 +172,12 @@ namespace Little_Stat
         /// </summary>
         /// <param name="ITEMNAME"></param>
         /// <param name="DESC"></param>
-        public void SetDescription(string ITEMNAME, string DESC)
+        public void SetDescription(string CHARNAME, string ITEMNAME, string DESC)
         {
-            using (SQLiteCommand cmd = new SQLiteCommand("UPDATE Inventory SET Description = @desc WHERE Name = @Name", db))
+            using (SQLiteCommand cmd = new SQLiteCommand("UPDATE Inventory SET Description = @desc WHERE Owner = @char AND Name = @item", db))
             {
-                cmd.Parameters.Add(new SQLiteParameter("@Name", ITEMNAME));
+                cmd.Parameters.Add(new SQLiteParameter("@char", CHARNAME));
+                cmd.Parameters.Add(new SQLiteParameter("@item", ITEMNAME));
                 cmd.Parameters.Add(new SQLiteParameter("@desc", DESC));
 
                 db.Open();
@@ -186,6 +185,27 @@ namespace Little_Stat
                 db.Close();
             }
         }
+
+
+        /// <summary>
+        /// Sets the item type
+        /// </summary>
+        /// <param name="ITEMNAME">Name of item</param>
+        /// <param name="TYPE">NAme of type</param>
+        public void SetType(string CHARNAME, string ITEMNAME, string TYPE)
+        {
+            using (SQLiteCommand cmd = new SQLiteCommand("UPDATE Inventory SET TYPE = @type WHERE Name = @item AND Owner = @char", db))
+            {
+                cmd.Parameters.Add(new SQLiteParameter("@char", CHARNAME));
+                cmd.Parameters.Add(new SQLiteParameter("@item", ITEMNAME));
+                cmd.Parameters.Add(new SQLiteParameter("@type", TYPE));
+
+                db.Open();
+                cmd.ExecuteNonQuery();
+                db.Close();
+            }
+        }
+
 
         /// <summary>
         /// Returns the numerical modifier stat for an
@@ -212,11 +232,8 @@ namespace Little_Stat
                 case Stat.Instinct:
                 case Stat.Communication:
                 case Stat.Attack:
+                case Stat.Defence:
                 case Stat.AoERadius:
-                case Stat.HeadArmour:
-                case Stat.BodyArmour:
-                case Stat.BackArmour:
-                case Stat.LegsArmour:
                 case Stat.Quantity:
                 case Stat.Weight:
                 case Stat.LastsTurns:
@@ -238,6 +255,26 @@ namespace Little_Stat
 
 
         /// <summary>
+        /// Gets total stat for a character including item bonuses
+        /// </summary>
+        /// <param name="CHARNAME"></param>
+        /// <param name="STAT"></param>
+        /// <returns></returns>
+        public float GetTotal(string CHARNAME, Stat STAT)
+        {
+            float TotalStat = 0;
+            var ItemList = List(CHARNAME);
+            ItemList.ForEach(delegate(String ITEMNAME)
+            {
+                TotalStat += GetStat(CHARNAME, ITEMNAME, STAT);
+            }
+            );
+
+            return TotalStat;
+        }
+
+
+        /// <summary>
         /// 
         /// </summary>
         /// <param name="CHARNAME">Name of character</param>
@@ -247,10 +284,10 @@ namespace Little_Stat
         {
             string result = "";
            
-            using (SQLiteCommand cmd = new SQLiteCommand("SELECT Description FROM Inventory WHERE Name = @Name AND Owner = @Owner", db))
+            using (SQLiteCommand cmd = new SQLiteCommand("SELECT Description FROM Inventory WHERE Name = @item AND Owner = @char", db))
             {
-                cmd.Parameters.Add(new SQLiteParameter("@Name", ITEMNAME));
-                cmd.Parameters.Add(new SQLiteParameter("@Owner", CHARNAME));
+                cmd.Parameters.Add(new SQLiteParameter("@item", ITEMNAME));
+                cmd.Parameters.Add(new SQLiteParameter("@char", CHARNAME));
 
                 db.Open();
                 SQLiteDataReader reader = cmd.ExecuteReader();
@@ -262,6 +299,32 @@ namespace Little_Stat
             return result;
         }
 
+
+        /// <summary>
+        /// Gets the item type
+        /// </summary>
+        /// <param name="CHARNAME">Name of character</param>
+        /// <param name="ITEMNAME">Name of item</param>
+        /// <returns></returns>
+        public string GetType(string CHARNAME, string ITEMNAME)
+        {
+            string result = "";
+
+            using (SQLiteCommand cmd = new SQLiteCommand("SELECT Type FROM Inventory WHERE Name = @item AND Owner = @char", db))
+            {
+                cmd.Parameters.Add(new SQLiteParameter("@item", ITEMNAME));
+                cmd.Parameters.Add(new SQLiteParameter("@char", CHARNAME));
+
+                db.Open();
+                SQLiteDataReader reader = cmd.ExecuteReader();
+                reader.Read();
+                result = reader.GetString(0);
+                db.Close();
+            }
+            return result;
+        }
+
+
         /// <summary>
         /// Gives all inventory to the GM when a character
         /// is removed from the database
@@ -269,9 +332,9 @@ namespace Little_Stat
         /// <param name="NAME">Name of character</param>
         public void RemoveChar(string CHARNAME)
         {
-            using (SQLiteCommand cmd = new SQLiteCommand("UPDATE Inventory SET Owner = 'GM' WHERE Owner = @Owner", db))
+            using (SQLiteCommand cmd = new SQLiteCommand("UPDATE Inventory SET Owner = 'GM' WHERE Owner = @char", db))
             {
-                cmd.Parameters.Add(new SQLiteParameter("@Owner", CHARNAME));
+                cmd.Parameters.Add(new SQLiteParameter("@char", CHARNAME));
 
                 db.Open();
                 cmd.ExecuteNonQuery();
@@ -288,11 +351,11 @@ namespace Little_Stat
         /// <param name="TO">Character to transfer to</param>
         public void Transfer(string ITEMNAME, string FROM, string TO)
         {
-            using (SQLiteCommand cmd = new SQLiteCommand("UPDATE Inventory SET Owner = @TO WHERE Owner = @FROM AND Name = @ITEMNAME", db))
+            using (SQLiteCommand cmd = new SQLiteCommand("UPDATE Inventory SET Owner = @to WHERE Owner = @from AND Name = @item", db))
             {
-                cmd.Parameters.Add(new SQLiteParameter("@ITEMNAME", ITEMNAME));
-                cmd.Parameters.Add(new SQLiteParameter("@FROM", FROM));
-                cmd.Parameters.Add(new SQLiteParameter("@TO", TO));
+                cmd.Parameters.Add(new SQLiteParameter("@item", ITEMNAME));
+                cmd.Parameters.Add(new SQLiteParameter("@from", FROM));
+                cmd.Parameters.Add(new SQLiteParameter("@to", TO));
 
                 db.Open();
                 cmd.ExecuteNonQuery();

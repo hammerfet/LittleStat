@@ -64,6 +64,7 @@
   <ItemGroup>
     <Compile Include="Character.cs" />
     <Compile Include="Combat.cs" />
+    <Compile Include="Counter.cs" />
     <Compile Include="Feats.cs" />
     <Compile Include="Inventory.cs" />
     <Compile Include="Program.cs" />
