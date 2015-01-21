@@ -28,7 +28,7 @@ namespace Little_Stat
 
                 else if (CurrentTurn > 1)
                 {
-                    inventory.SetStat(CHARNAME, ITEMNAME, Stat.LastsTurns, CurrentTurn--);
+                    inventory.SetStat(CHARNAME, ITEMNAME, Stat.LastsTurns, CurrentTurn - 1);
                 }
             }
             );
