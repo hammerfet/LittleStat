@@ -548,7 +548,7 @@ namespace Little_Stat
                 Console.ForegroundColor = ConsoleColor.Blue;
                 Console.WriteLine("  Press 'A' to add");
                 Console.WriteLine("  Press 'T' to transfer");
-                Console.WriteLine("  Press 'C' to copy item (not implemented yet)");
+                Console.WriteLine("  Press 'C' to copy (not implemented yet)");
                 Console.WriteLine("  Press 'Del' to remove");
                 Console.WriteLine("  Press any key to return");
                 Console.ResetColor();
@@ -613,7 +613,19 @@ namespace Little_Stat
             while (true)
             {
                 float res;
-                if (float.TryParse(Console.ReadLine(), out res)) return res;
+                string str = Console.ReadLine();
+
+                if (float.TryParse(str, out res))
+                {
+                    return res;
+                }
+
+                else if (str == "")
+                {
+                    Console.Write("0");
+                    return 0;
+                }
+
                 else
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
