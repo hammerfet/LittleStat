@@ -49,6 +49,11 @@ namespace Little_Stat
             }
         }
 
+
+        /// <summary>
+        /// Deletes a character from the databsae
+        /// </summary>
+        /// <param name="NAME">Name of character</param>
         public void Delete(string NAME)
         {
             using (SQLiteCommand cmd = new SQLiteCommand("DELETE FROM Characters WHERE Name = @Name", db))

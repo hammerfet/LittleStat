@@ -96,6 +96,12 @@ namespace Little_Stat
         }
 
 
+        public float ConsumeItem(string ITEMNAME, string CHARNAME)
+        {
+
+            return 0;
+        }
+
         static Character character = new Character();
         static Inventory inventory = new Inventory();
         static Feats feats = new Feats();

@@ -17,7 +17,7 @@ namespace Little_Stat
         /// </summary>
         /// <param name="CHARNAME">name of character to add item to</param>
         /// <param name="ITEMNAME">name of item</param>
-        public void Create(string CHARNAME, string ITEMNAME)
+        public void Create(string CHARNAME, string ITEMNAME) // TODO: Maybe remove the whole quantity thing
         {
             
             using (SQLiteCommand cmd = new SQLiteCommand("SELECT Quantity FROM Inventory WHERE Owner = @char AND Name = @item", db))
@@ -31,7 +31,7 @@ namespace Little_Stat
                 cmd.Parameters.Add(new SQLiteParameter("@NewQuantity", quantity + 1));
 
                 if(quantity > 0)    cmd.CommandText = "UPDATE Inventory SET Quantity = @NewQuantity WHERE Owner = @char AND Name = @item";
-                else                cmd.CommandText = "INSERT INTO Inventory (Name, Owner) VALUES (@item, @char)";
+                else                cmd.CommandText = "INSERT INTO Inventory (Name, Owner, Quantity) VALUES (@item, @char, 1)";
 
                 db.Open();
                 cmd.ExecuteNonQuery();
@@ -98,13 +98,23 @@ namespace Little_Stat
         /// Returns a list of items held by a character
         /// </summary>
         /// <returns>List containing item names</returns>
-        public List<string> List(string CHARNAME)
+        public List<string> List(string CHARNAME, Stat TYPE)
         {
             List<String> itemNameList = new List<string>();
-          
-            using (SQLiteCommand cmd = new SQLiteCommand("SELECT Name FROM Inventory where Owner = @char", db))
+
+            string str = "SELECT Name FROM Inventory where Owner = @char AND Type = @type";
+
+            // Only if item is combat type, then use this command
+            if (TYPE == Stat.CombatItem) str = "SELECT Name FROM Inventory where Owner = @char AND (Type = @heavy OR Type = @light OR Type = @ranged OR Type = @magic)";
+ 
+            using (SQLiteCommand cmd = new SQLiteCommand(str, db))
             {
                 cmd.Parameters.Add(new SQLiteParameter("@char", CHARNAME));
+                cmd.Parameters.Add(new SQLiteParameter("@type", TYPE));
+                cmd.Parameters.Add(new SQLiteParameter("@heavy", Stat.Heavy));
+                cmd.Parameters.Add(new SQLiteParameter("@light", Stat.Light));
+                cmd.Parameters.Add(new SQLiteParameter("@ranged", Stat.Ranged));
+                cmd.Parameters.Add(new SQLiteParameter("@magic", Stat.Magic));
                 db.Open();
                 SQLiteDataReader reader = cmd.ExecuteReader();
                 int i = 0;
@@ -120,11 +130,11 @@ namespace Little_Stat
 
 
         /// <summary>
-        /// 
+        /// Sets the stat of an item
         /// </summary>
-        /// <param name="ITEMNAME"></param>
-        /// <param name="STAT"></param>
-        /// <param name="value"></param>
+        /// <param name="ITEMNAME">Name of item</param>
+        /// <param name="STAT">Stat selection from enum</param>
+        /// <param name="VALUE">Value to give</param>
         public void SetStat(string CHARNAME, string ITEMNAME, Stat STAT, float VALUE)
         {
             string str = "";
@@ -142,10 +152,13 @@ namespace Little_Stat
                 case Stat.Communication:
                 case Stat.Attack:
                 case Stat.Defence:
+                case Stat.Triggered:
                 case Stat.AoERadius:
                 case Stat.Quantity:
                 case Stat.Weight:
                 case Stat.LastsTurns:
+                case Stat.ManaCost:
+                case Stat.StaminaCost:
                     str = string.Format("UPDATE Inventory SET {0} = @value WHERE Name = @item AND Owner = @char", STAT);
                     break;
 
@@ -192,7 +205,7 @@ namespace Little_Stat
         /// </summary>
         /// <param name="ITEMNAME">Name of item</param>
         /// <param name="TYPE">NAme of type</param>
-        public void SetType(string CHARNAME, string ITEMNAME, string TYPE)
+        public void SetType(string CHARNAME, string ITEMNAME, Stat TYPE)
         {
             using (SQLiteCommand cmd = new SQLiteCommand("UPDATE Inventory SET TYPE = @type WHERE Name = @item AND Owner = @char", db))
             {
@@ -233,10 +246,13 @@ namespace Little_Stat
                 case Stat.Communication:
                 case Stat.Attack:
                 case Stat.Defence:
+                case Stat.Triggered:
                 case Stat.AoERadius:
                 case Stat.Quantity:
                 case Stat.Weight:
                 case Stat.LastsTurns:
+                case Stat.ManaCost:
+                case Stat.StaminaCost:
                     str = string.Format("SELECT {0} FROM Inventory WHERE Name = '{1}' AND Owner = '{2}'", STAT, ITEMNAME, CHARNAME);
                     break;
 
@@ -255,7 +271,7 @@ namespace Little_Stat
 
 
         /// <summary>
-        /// Gets total stat for a character including item bonuses
+        /// Gets total effect buffs for a character including item bonuses
         /// </summary>
         /// <param name="CHARNAME"></param>
         /// <param name="STAT"></param>
@@ -263,8 +279,16 @@ namespace Little_Stat
         public float GetTotal(string CHARNAME, Stat STAT)
         {
             float TotalStat = 0;
-            var ItemList = List(CHARNAME);
-            ItemList.ForEach(delegate(String ITEMNAME)
+         
+            var EffectList = List(CHARNAME, Stat.Effect);
+            EffectList.ForEach(delegate(String ITEMNAME)
+            {
+                TotalStat += GetStat(CHARNAME, ITEMNAME, STAT);
+            }
+            );
+
+            var WeaponList = List(CHARNAME, Stat.CombatItem);
+            WeaponList.ForEach(delegate(String ITEMNAME)
             {
                 TotalStat += GetStat(CHARNAME, ITEMNAME, STAT);
             }
@@ -275,7 +299,7 @@ namespace Little_Stat
 
 
         /// <summary>
-        /// 
+        /// Gets the description of the item
         /// </summary>
         /// <param name="CHARNAME">Name of character</param>
         /// <param name="ITEMNAME">Name of item</param>
@@ -306,7 +330,7 @@ namespace Little_Stat
         /// <param name="CHARNAME">Name of character</param>
         /// <param name="ITEMNAME">Name of item</param>
         /// <returns></returns>
-        public string GetType(string CHARNAME, string ITEMNAME)
+        public string GetType(string CHARNAME, string ITEMNAME) // TODO: fix this to use Stat.Type
         {
             string result = "";
 

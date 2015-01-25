@@ -16,7 +16,7 @@ namespace Little_Stat
         /// </summary>
         public void NextTurn(string CHARNAME)
         {
-            var ItemList = inventory.List(CHARNAME);
+            var ItemList = inventory.List(CHARNAME, Stat.Effect);
             ItemList.ForEach(delegate(String ITEMNAME)
             {
                 int CurrentTurn = (int) inventory.GetStat(CHARNAME, ITEMNAME, Stat.LastsTurns);
