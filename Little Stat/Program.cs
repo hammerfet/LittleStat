@@ -145,7 +145,7 @@ namespace Little_Stat
 
                     case ConsoleKey.D7:
                     case ConsoleKey.NumPad7:
-                        counter.NextTurn("Adi");
+                        counter.NextTurn("Kiran");
                         Console.ReadKey();
                         break;
 
@@ -615,16 +615,9 @@ namespace Little_Stat
                 float res;
                 string str = Console.ReadLine();
 
-                if (float.TryParse(str, out res))
-                {
-                    return res;
-                }
-
-                else if (str == "")
-                {
-                    Console.Write("0");
-                    return 0;
-                }
+                if (float.TryParse(str, out res)) return res;
+          
+                else if (str == "") return 0;
 
                 else
                 {
