@@ -81,7 +81,7 @@ namespace Little_Stat
                 int i = 0;
                 while (reader.Read())
                 {
-                    namesList.Add(reader.GetString(i));
+                    namesList.Add(reader.GetString(i)); // TODO: Possible bug may include GM in list, we shouldnt do this
                 }
                 reader.Close();
                 db.Close();

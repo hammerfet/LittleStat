@@ -102,7 +102,7 @@ namespace Little_Stat
                 Console.WriteLine("    4 - ");
                 Console.WriteLine("    5 - ");
                 Console.WriteLine("    6 - ");
-                Console.WriteLine("    7 - ");
+                Console.WriteLine("    7 - Next turn for all players");
                 Console.WriteLine("    8 - Test normally distributed roll");
                 Console.WriteLine("    9 - Start Combat");
                 Console.WriteLine("");
@@ -145,7 +145,7 @@ namespace Little_Stat
 
                     case ConsoleKey.D7:
                     case ConsoleKey.NumPad7:
-                        counter.NextTurn("Kiran");
+                        counter.AllNextTurn();
                         Console.ReadKey();
                         break;
 
@@ -383,7 +383,7 @@ namespace Little_Stat
             }
 
             // Create item if it doesn't exist and set defult quantity to 1
-            else inventory.Create(CHARNAME, ITEMNAME);
+            else inventory.Add(CHARNAME, ITEMNAME);
 
             // Finally write or overwite character stats
             Console.Write("    Enter description: ");
@@ -558,7 +558,7 @@ namespace Little_Stat
                 Console.Write("\b \b\n");
                 
                 // Delete item
-                if (menu.Key == ConsoleKey.Delete) inventory.Delete(CHARNAME, SELECTEDITEM);           
+                if (menu.Key == ConsoleKey.Delete) inventory.Remove(CHARNAME, SELECTEDITEM);           
                 
                 // Copy or transfer item
                 if (menu.Key == ConsoleKey.A) CreateInventory(CHARNAME, TYPE);
@@ -657,13 +657,13 @@ namespace Little_Stat
                     case "ranged":
                     case "R":
                     case "r":
-                        return Stat.Heavy;
+                        return Stat.Ranged;
 
                     case "Magic":
                     case "magic":
                     case "M":
                     case "m":
-                        return Stat.Heavy;
+                        return Stat.Magic;
 
                     default:
                         Console.ForegroundColor = ConsoleColor.Red;
@@ -737,19 +737,8 @@ namespace Little_Stat
          */
         static Character character = new Character();
         static Inventory inventory = new Inventory();
-        static Feats feats = new Feats();
         static RollGenerator dice = new RollGenerator();
         static Combat combat = new Combat();
         static Counter counter = new Counter();
-        
-        float STRENGTH;
-        float VIGOUR;
-        float AGILITY;
-        float INTELLECT;
-        float PERCEPTION;
-        float TENACITY;
-        float CHARISMA;
-        float INSTINCT;
-        float COMMUNICATION;
     }
 }

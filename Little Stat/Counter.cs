@@ -10,6 +10,20 @@ namespace Little_Stat
     class Counter
     {
         /// <summary>
+        /// Like Next turn but applies to all players
+        /// </summary>
+        public void AllNextTurn()
+        {
+            var CharList = character.List();
+            CharList.ForEach(delegate(String CHARNAME)
+            {
+                NextTurn(CHARNAME);
+            }
+            );
+        }
+
+
+        /// <summary>
         /// Drops all the "lasts turns" values for all items & effects.
         /// If 1, the item expires and moves to GM ownership.
         /// items with 0 turns aren't effected.
@@ -45,5 +59,6 @@ namespace Little_Stat
          */
 
         Inventory inventory = new Inventory();
+        Character character = new Character();
     }
 }

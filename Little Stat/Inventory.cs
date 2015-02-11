@@ -17,7 +17,7 @@ namespace Little_Stat
         /// </summary>
         /// <param name="CHARNAME">name of character to add item to</param>
         /// <param name="ITEMNAME">name of item</param>
-        public void Create(string CHARNAME, string ITEMNAME) // TODO: Maybe remove the whole quantity thing
+        public void Add(string CHARNAME, string ITEMNAME) // TODO: Maybe remove the whole quantity thing
         {
             
             using (SQLiteCommand cmd = new SQLiteCommand("SELECT Quantity FROM Inventory WHERE Owner = @char AND Name = @item", db))
@@ -47,7 +47,7 @@ namespace Little_Stat
         /// </summary>
         /// <param name="CHARNAME">nane of character to remove item from</param>
         /// <param name="ITEMNAME">name of item</param>
-        public void Delete(string CHARNAME, string ITEMNAME)
+        public void Remove(string CHARNAME, string ITEMNAME)
         {
 
             using (SQLiteCommand cmd = new SQLiteCommand("SELECT Quantity FROM Inventory WHERE Owner = @char AND Name = @item", db))

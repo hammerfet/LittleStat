@@ -104,7 +104,6 @@ namespace Little_Stat
 
         static Character character = new Character();
         static Inventory inventory = new Inventory();
-        static Feats feats = new Feats();
         static RollGenerator dice = new RollGenerator();
     }
 }
